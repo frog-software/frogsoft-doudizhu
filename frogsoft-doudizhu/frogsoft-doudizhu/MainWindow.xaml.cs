@@ -27,7 +27,11 @@ namespace frogsoft_doudizhu
             PutCardPanel_Upgrade();
             LeftPutCardPanel_Upgrade();
             RightPutCardPanel_Upgrade();
+            ButtonPanel_Upgrade(BUTTON_ON_PLAY);
         }
+
+        private const int BUTTON_ON_PLAY = 0;
+        private const int BUTTON_ON_CALL = 1;
 
         private const int CARD_DESELECT_MARGIN = -60;
         private const int CARD_SELECT_MARGIN = 0;
@@ -120,7 +124,57 @@ namespace frogsoft_doudizhu
             }
         }
 
-        private void PutCard_Click(object sender, RoutedEventArgs e) // 出牌
+        private void ButtonPanel_Upgrade(int buttonType)
+        {
+            buttonPanel.Children.Clear();
+
+            switch (buttonType)
+            {
+                case BUTTON_ON_CALL:
+                    break;
+                case BUTTON_ON_PLAY:
+                    Button reselectButton = new Button();
+                    reselectButton.Content = "重选";
+                    reselectButton.Width = 120;
+                    reselectButton.Height = 50;
+                    reselectButton.Click += ReselectButton_Click;
+                    reselectButton.Margin = new Thickness { Left = 420 - 100, Top = 25 };
+                    buttonPanel.Children.Add(reselectButton);
+
+                    Button skipCardButton = new Button();
+                    skipCardButton.Content = "不出";
+                    skipCardButton.Width = 120;
+                    skipCardButton.Height = 50;
+                    skipCardButton.Click += SkipCardButton_Click;
+                    skipCardButton.Margin = new Thickness { Left = 100, Top = 25 };
+                    buttonPanel.Children.Add(skipCardButton);
+
+                    Button putCardButton = new Button();
+                    putCardButton.Content = "出牌";
+                    putCardButton.Width = 120;
+                    putCardButton.Height = 50;
+                    putCardButton.Click += PutCardButton_Click;
+                    putCardButton.Margin = new Thickness { Left = 100, Top = 25 };
+                    buttonPanel.Children.Add(putCardButton);
+                    break;
+            }
+        }
+
+        private void ReselectButton_Click(object sender, RoutedEventArgs e) // 重选
+        {
+            foreach (var i in leftCardPanel.Children)
+            {
+                Image image = i as Image;
+                image.Margin = new Thickness { Left = image.Margin.Left, Bottom = CARD_DESELECT_MARGIN };
+            }
+        }
+
+        private void SkipCardButton_Click(object sender, RoutedEventArgs e) // 不出
+        {
+            
+        }
+
+        private void PutCardButton_Click(object sender, RoutedEventArgs e) // 出牌
         {
             putCardList.Clear();
             foreach (var i in leftCardPanel.Children)
@@ -140,15 +194,6 @@ namespace frogsoft_doudizhu
 
             PutCardPanel_Upgrade();
             LeftCardPanel_Upgrade();
-        }
-
-        private void Reselect_Click(object sender, RoutedEventArgs e) // 重选
-        {
-            foreach (var i in leftCardPanel.Children)
-            {
-                Image image = i as Image;
-                image.Margin = new Thickness { Left = image.Margin.Left, Bottom = CARD_DESELECT_MARGIN };
-            }
         }
     }
 }
