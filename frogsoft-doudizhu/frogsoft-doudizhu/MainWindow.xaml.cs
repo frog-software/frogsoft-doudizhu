@@ -58,7 +58,14 @@ namespace frogsoft_doudizhu
             OutCardPanel_Upgrade(rightPutCardPanel, rightPutCardList, 3);
         }
 
-        private void OutCardPanel_Upgrade(StackPanel cardPanel, List<int> cardList, int sideCase)
+        private void AllCardPanel_Clear() // 清除牌桌上的牌
+        {
+            putCardPanel.Children.Clear();
+            rightPutCardPanel.Children.Clear();
+            leftPutCardPanel.Children.Clear();
+        }
+
+        private void OutCardPanel_Upgrade(StackPanel cardPanel, List<int> cardList, int sideCase) // 更新牌堆中的动画
         {
             cardPanel.Children.Clear();
             foreach (int card in cardList)
@@ -124,13 +131,15 @@ namespace frogsoft_doudizhu
             }
         }
 
-        private void ButtonPanel_Upgrade(int buttonType)
+        private void ButtonPanel_Upgrade(int buttonType) // 添加游戏按钮
         {
             buttonPanel.Children.Clear();
 
             switch (buttonType)
             {
                 case BUTTON_ON_CALL:
+
+
                     break;
                 case BUTTON_ON_PLAY:
                     Button reselectButton = new Button();
@@ -176,24 +185,27 @@ namespace frogsoft_doudizhu
 
         private void PutCardButton_Click(object sender, RoutedEventArgs e) // 出牌
         {
-            putCardList.Clear();
-            foreach (var i in leftCardPanel.Children)
+            if (putCardList.Count > 0)
             {
-                Image image = i as Image;
-                if (image == null) continue;
-
-                if (image.Margin.Bottom == CARD_SELECT_MARGIN)
+                putCardList.Clear();
+                foreach (var i in leftCardPanel.Children)
                 {
-                    putCardList.Add(Convert.ToInt32(image.Name[4..]));
+                    Image image = i as Image;
+                    if (image == null) continue;
 
-                    for (var j = 0; j < leftCardList.Count; j++)
-                        if (leftCardList[j] == Convert.ToInt32(image.Name[4..]))
-                            leftCardList.RemoveAt(j);
+                    if (image.Margin.Bottom == CARD_SELECT_MARGIN)
+                    {
+                        putCardList.Add(Convert.ToInt32(image.Name[4..]));
+
+                        for (var j = 0; j < leftCardList.Count; j++)
+                            if (leftCardList[j] == Convert.ToInt32(image.Name[4..]))
+                                leftCardList.RemoveAt(j);
+                    }
                 }
-            }
 
-            PutCardPanel_Upgrade();
-            LeftCardPanel_Upgrade();
+                PutCardPanel_Upgrade();
+                LeftCardPanel_Upgrade();
+            }
         }
     }
 }
