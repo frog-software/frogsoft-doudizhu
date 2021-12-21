@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Threading;
 
 namespace frogsoft_doudizhu
 {
@@ -23,10 +24,8 @@ namespace frogsoft_doudizhu
         public MainWindow()
         {
             InitializeComponent();
+
             LeftCardPanel_Upgrade();
-            PutCardPanel_Upgrade();
-            LeftPutCardPanel_Upgrade();
-            RightPutCardPanel_Upgrade();
             ButtonPanel_Upgrade(BUTTON_ON_PLAY);
         }
 
@@ -36,14 +35,16 @@ namespace frogsoft_doudizhu
         private const int CARD_DESELECT_MARGIN = -60;   // 不被选中的牌
         private const int CARD_SELECT_MARGIN = 0;       // 被选中的牌
 
-        private List<int> leftCardList = new List<int> { 9, 13, 17, 21, 25, 29 };
+        // private List<int> ready = new List<int> { 9, 13, 17, 21, 25, 29 };
+        private List<int> leftCardList = new List<int> { 9, 13, 17, 21, 25, 29 }; // 自己手上的牌
 
-        private List<int> leftPutCardList = new List<int> { 1 };
-        private List<int> rightPutCardList = new List<int> { };
+        private List<int> leftPutCardList = new List<int> { 1 };    // 上家出的牌
+        private List<int> rightPutCardList = new List<int> { };     // 下家出的牌
 
-        private List<int> selectCardList = new List<int> { };
-        private List<int> putCardList = new List<int> { };
+        private List<int> selectCardList = new List<int> { };       // 已选中的牌
+        private List<int> putCardList = new List<int> { };          // 打出去的牌
 
+        // private int test = 0;
 
         private void PutCardPanel_Upgrade() // 更新自己的出牌堆动画
         {
@@ -73,7 +74,7 @@ namespace frogsoft_doudizhu
             foreach (int card in cardList)
             {
                 Image image = new Image();
-                image.Source = new BitmapImage(new Uri("/image/" + card.ToString() + ".png", UriKind.Relative));
+                image.Source = new BitmapImage(new Uri("/images/cards/" + card.ToString() + ".png", UriKind.Relative));
                 image.Name = "card" + card.ToString();
                 image.Width = 70;
                 image.Height = 105;
@@ -105,7 +106,7 @@ namespace frogsoft_doudizhu
             foreach (int card in leftCardList)
             {
                 Image image = new Image();
-                image.Source = new BitmapImage(new Uri("/image/" + card.ToString() + ".png", UriKind.Relative));
+                image.Source = new BitmapImage(new Uri("/images/cards/" + card.ToString() + ".png", UriKind.Relative));
 
                 image.Name = "card" + card.ToString();
                 image.Width = 105;
@@ -193,7 +194,19 @@ namespace frogsoft_doudizhu
 
         private void SkipCardButton_Click(object sender, RoutedEventArgs e) // 不出
         {
-            
+            selectCardList.Clear();
+            foreach (var i in leftCardPanel.Children)
+            {
+                Image image = i as Image;
+                image.Margin = new Thickness { Left = image.Margin.Left, Bottom = CARD_DESELECT_MARGIN };
+            }
+
+            /*if (test < ready.Count)
+            {
+                leftCardList.Add(ready[test]);
+                LeftCardPanel_Upgrade();
+                test++;
+            }*/
         }
 
         private void PutCardButton_Click(object sender, RoutedEventArgs e) // 出牌
