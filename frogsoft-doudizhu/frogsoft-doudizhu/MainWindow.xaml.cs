@@ -23,10 +23,10 @@ namespace frogsoft_doudizhu
         public MainWindow()
         {
             InitializeComponent();
-            leftCardPanel_Upgrade();
-            putCardPanel_Upgrade();
-            leftPutCardPanel_Upgrade();
-            rightPutCardPanel_Upgrade();
+            LeftCardPanel_Upgrade();
+            PutCardPanel_Upgrade();
+            LeftPutCardPanel_Upgrade();
+            RightPutCardPanel_Upgrade();
         }
 
         private const int CARD_DESELECT_MARGIN = -60;
@@ -35,26 +35,26 @@ namespace frogsoft_doudizhu
         public List<int> leftCardList = new List<int> { 1, 2, 3 };
 
         public List<int> leftPutCardList = new List<int> { 1 };
-        public List<int> rightPutCardList = new List<int> { 1, 1, 1, 1, 1, 1 };
-        public List<int> putCardList = new List<int> {  1, 1, 1, 1, 1, 1, 1, 1 };
+        public List<int> rightPutCardList = new List<int> { 9, 13, 17, 21, 25, 29 };
+        public List<int> putCardList = new List<int> { 1, 1, 1, 1, 1, 1, 1, 1 };
 
 
-        private void putCardPanel_Upgrade() // 更新自己的出牌堆动画
+        private void PutCardPanel_Upgrade() // 更新自己的出牌堆动画
         {
-            outCardPanel_Upgrade(putCardPanel, putCardList, 1);
+            OutCardPanel_Upgrade(putCardPanel, putCardList, 1);
         }
 
-        private void leftPutCardPanel_Upgrade() // 更新上家的出牌堆动画
+        private void LeftPutCardPanel_Upgrade() // 更新上家的出牌堆动画
         {
-            outCardPanel_Upgrade(leftPutCardPanel, leftPutCardList, 2);
+            OutCardPanel_Upgrade(leftPutCardPanel, leftPutCardList, 2);
         }
 
-        private void rightPutCardPanel_Upgrade() // 更新下家的出牌堆动画
+        private void RightPutCardPanel_Upgrade() // 更新下家的出牌堆动画
         {
-            outCardPanel_Upgrade(rightPutCardPanel, rightPutCardList, 3);
+            OutCardPanel_Upgrade(rightPutCardPanel, rightPutCardList, 3);
         }
 
-        private void outCardPanel_Upgrade(StackPanel cardPanel, List<int> cardList, int sideCase)
+        private void OutCardPanel_Upgrade(StackPanel cardPanel, List<int> cardList, int sideCase)
         {
             cardPanel.Children.Clear();
             foreach (int card in cardList)
@@ -70,21 +70,23 @@ namespace frogsoft_doudizhu
             }
 
             if (cardList.Count > 0)
-                switch (sideCase)
             {
-                case 1:
-                    (cardPanel.Children[0] as Image).Margin = new Thickness { Left = (window.Width - (cardList.Count - 1) * 24 - 70) / 2 };
-                    break;
-                case 2:
-                    (cardPanel.Children[0] as Image).Margin = new Thickness { Left = window.Width / 20 };
-                    break;
-                case 3:
-                    (cardPanel.Children[0] as Image).Margin = new Thickness { Left = window.Width * 19 / 20 - (cardList.Count - 1) * 24 - 70 };
-                    break;
+                switch (sideCase)
+                {
+                    case 1:
+                        (cardPanel.Children[0] as Image).Margin = new Thickness { Left = (window.Width - (cardList.Count - 1) * 24 - 70) / 2 };
+                        break;
+                    case 2:
+                        (cardPanel.Children[0] as Image).Margin = new Thickness { Left = 200 };
+                        break;
+                    case 3:
+                        (cardPanel.Children[0] as Image).Margin = new Thickness { Left = 550 - (cardList.Count - 1) * 24 - 70 };
+                        break;
+                }
             }
         }
 
-        private void leftCardPanel_Upgrade() // 更新剩余手牌堆动画
+        private void LeftCardPanel_Upgrade() // 更新剩余手牌堆动画
         {
             leftCardPanel.Children.Clear();
             foreach (int card in leftCardList)
@@ -96,7 +98,7 @@ namespace frogsoft_doudizhu
                 image.Width = 105;
                 image.Height = 140;
                 image.Margin = new Thickness { Left = -70, Bottom = CARD_DESELECT_MARGIN };
-                image.MouseLeftButtonUp += cardImage_Click;
+                image.MouseLeftButtonUp += CardImage_Click;
 
                 leftCardPanel.Children.Add(image);
             }
@@ -105,7 +107,7 @@ namespace frogsoft_doudizhu
                 (leftCardPanel.Children[0] as Image).Margin = new Thickness { Left = (window.Width - (leftCardList.Count - 1) * 35 - 105) / 2, Bottom = CARD_DESELECT_MARGIN };
         }
 
-        private void cardImage_Click(object sender, RoutedEventArgs e) // 点击牌时的动画
+        private void CardImage_Click(object sender, RoutedEventArgs e) // 点击牌时的动画
         {
             Image image = sender as Image;
             if (image.Margin.Bottom == CARD_DESELECT_MARGIN)
@@ -118,7 +120,7 @@ namespace frogsoft_doudizhu
             }
         }
 
-        private void putCard_Click(object sender, RoutedEventArgs e) // 出牌
+        private void PutCard_Click(object sender, RoutedEventArgs e) // 出牌
         {
             putCardList.Clear();
             foreach (var i in leftCardPanel.Children)
@@ -136,11 +138,11 @@ namespace frogsoft_doudizhu
                 }
             }
 
-            putCardPanel_Upgrade();
-            leftCardPanel_Upgrade();
+            PutCardPanel_Upgrade();
+            LeftCardPanel_Upgrade();
         }
 
-        private void reselect_Click(object sender, RoutedEventArgs e) // 重选
+        private void Reselect_Click(object sender, RoutedEventArgs e) // 重选
         {
             foreach (var i in leftCardPanel.Children)
             {

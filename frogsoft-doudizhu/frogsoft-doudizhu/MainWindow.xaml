@@ -7,9 +7,9 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="700" Width="1200" MinWidth="1200" MinHeight="700" MaxWidth="1200" MaxHeight="700">
     <Grid>
-        <Button x:Name="skipCard" Content="不出" HorizontalAlignment="Center" VerticalAlignment="Top" Height="49" Width="126" Margin="0,410,0,0"/>
-        <Button x:Name="reselectCard" Content="重选" HorizontalAlignment="Left" VerticalAlignment="Top" Height="49" Width="126" Margin="271,410,0,0" Click="reselect_Click"/>
-        <Button x:Name="putCard" Content="出牌" HorizontalAlignment="Left" Margin="801,410,0,0" VerticalAlignment="Top" Height="49" Width="126" Click="putCard_Click"/>
+        <Button x:Name="skipCard" Content="不出" HorizontalAlignment="Center" VerticalAlignment="Top" Height="50" Width="120" Margin="0,395,0,0"/>
+        <Button x:Name="reselectCard" Content="重选" HorizontalAlignment="Left" VerticalAlignment="Top" Height="50" Width="120" Margin="271,395,0,0" Click="Reselect_Click"/>
+        <Button x:Name="putCard" Content="出牌" HorizontalAlignment="Left" Margin="801,395,0,0" VerticalAlignment="Top" Height="50" Width="120" Click="PutCard_Click"/>
 
 
 
@@ -20,8 +20,8 @@
         <StackPanel x:Name="putCardPanel" Margin="0,250,0,280" Orientation="Horizontal">
 
         </StackPanel>
-        <StackPanel x:Name="leftPutCardPanel" Margin="0,100,0,400" Orientation="Horizontal"/>
-        <StackPanel x:Name="rightPutCardPanel" Margin="0,100,0,400" Orientation="Horizontal"/>
+        <StackPanel x:Name="leftPutCardPanel" Margin="0,100,450,400" Orientation="Horizontal"/>
+        <StackPanel x:Name="rightPutCardPanel" Margin="450,100,0,400" Orientation="Horizontal"/>
 
 
     </Grid>
