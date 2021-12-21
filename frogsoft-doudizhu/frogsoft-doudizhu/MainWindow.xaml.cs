@@ -30,17 +30,19 @@ namespace frogsoft_doudizhu
             ButtonPanel_Upgrade(BUTTON_ON_PLAY);
         }
 
-        private const int BUTTON_ON_PLAY = 0;
-        private const int BUTTON_ON_CALL = 1;
+        private const int BUTTON_ON_PLAY = 0;   // 打牌时的按钮
+        private const int BUTTON_ON_CALL = 1;   // 叫分时的按钮
 
-        private const int CARD_DESELECT_MARGIN = -60;
-        private const int CARD_SELECT_MARGIN = 0;
+        private const int CARD_DESELECT_MARGIN = -60;   // 不被选中的牌
+        private const int CARD_SELECT_MARGIN = 0;       // 被选中的牌
 
-        public List<int> leftCardList = new List<int> { 1, 2, 3 };
+        private List<int> leftCardList = new List<int> { 9, 13, 17, 21, 25, 29 };
 
-        public List<int> leftPutCardList = new List<int> { 1 };
-        public List<int> rightPutCardList = new List<int> { 9, 13, 17, 21, 25, 29 };
-        public List<int> putCardList = new List<int> { 1, 1, 1, 1, 1, 1, 1, 1 };
+        private List<int> leftPutCardList = new List<int> { 1 };
+        private List<int> rightPutCardList = new List<int> { };
+
+        private List<int> selectCardList = new List<int> { };
+        private List<int> putCardList = new List<int> { };
 
 
         private void PutCardPanel_Upgrade() // 更新自己的出牌堆动画
@@ -118,15 +120,25 @@ namespace frogsoft_doudizhu
                 (leftCardPanel.Children[0] as Image).Margin = new Thickness { Left = (window.Width - (leftCardList.Count - 1) * 35 - 105) / 2, Bottom = CARD_DESELECT_MARGIN };
         }
 
-        private void CardImage_Click(object sender, RoutedEventArgs e) // 点击牌时的动画
+        private void CardImage_Click(object sender, RoutedEventArgs e) // 牌被点击时
         {
             Image image = sender as Image;
             if (image.Margin.Bottom == CARD_DESELECT_MARGIN)
             {
+                selectCardList.Add(Convert.ToInt32(image.Name[4..]));
                 image.Margin = new Thickness { Left = image.Margin.Left, Bottom = CARD_SELECT_MARGIN };
             }
             else
             {
+                for (var i = 0; i < selectCardList.Count; i++)
+                {
+                    if (selectCardList[i] == Convert.ToInt32(image.Name[4..]))
+                    {
+                        selectCardList.RemoveAt(i);
+                        break;
+                    }
+                }
+
                 image.Margin = new Thickness { Left = image.Margin.Left, Bottom = CARD_DESELECT_MARGIN };
             }
         }
@@ -171,6 +183,7 @@ namespace frogsoft_doudizhu
 
         private void ReselectButton_Click(object sender, RoutedEventArgs e) // 重选
         {
+            selectCardList.Clear();
             foreach (var i in leftCardPanel.Children)
             {
                 Image image = i as Image;
@@ -185,26 +198,47 @@ namespace frogsoft_doudizhu
 
         private void PutCardButton_Click(object sender, RoutedEventArgs e) // 出牌
         {
-            if (putCardList.Count > 0)
+            if (selectCardList.Count > 0) // 有选择牌
             {
                 putCardList.Clear();
-                foreach (var i in leftCardPanel.Children)
+
+                // 此处对selectCardList做一个排序
+
+                foreach (var card in selectCardList)
+                    putCardList.Add(card);
+
+                if (true) // 允许出牌
                 {
-                    Image image = i as Image;
-                    if (image == null) continue;
-
-                    if (image.Margin.Bottom == CARD_SELECT_MARGIN)
+                    foreach (var i in leftCardPanel.Children)
                     {
-                        putCardList.Add(Convert.ToInt32(image.Name[4..]));
+                        Image image = i as Image;
 
-                        for (var j = 0; j < leftCardList.Count; j++)
-                            if (leftCardList[j] == Convert.ToInt32(image.Name[4..]))
-                                leftCardList.RemoveAt(j);
+                        if (image.Margin.Bottom == CARD_SELECT_MARGIN)
+                        {
+                            for (var j = 0; j < leftCardList.Count; j++)
+                            {
+                                if (leftCardList[j] == Convert.ToInt32(image.Name[4..]))
+                                {
+                                    leftCardList.RemoveAt(j);
+                                    j--;
+                                }
+                            }
+                        }
                     }
+
+                    selectCardList.Clear();
+                    PutCardPanel_Upgrade();
+                    LeftCardPanel_Upgrade();
+                }
+                else // 不允许出牌
+                {
+                    MessageBox.Show("不能出");
                 }
 
-                PutCardPanel_Upgrade();
-                LeftCardPanel_Upgrade();
+            }
+            else // 未选牌错误处理
+            {
+                MessageBox.Show("请选择牌！");
             }
         }
     }
