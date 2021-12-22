@@ -91,9 +91,9 @@
             <StackPanel x:Name="rightPutCardPanel" Margin="450,140,0,400" Orientation="Horizontal" />
 
             <StackPanel x:Name="buttonPanelOnPlay" Margin="0,350,0,200" Orientation="Horizontal" Visibility="Collapsed">
-                <Button Content="重选" Width="120" Height="50" Margin="360,35,0,0" Style="{StaticResource GeneralButton}" Click="ReselectButton_Click" />
-                <Button Content="不出" Width="120" Height="50" Margin="100,35,0,0" Style="{StaticResource GeneralButton}" Click="SkipCardButton_Click" />
-                <Button Content="出牌" Width="120" Height="50" Margin="100,35,0,0" Style="{StaticResource GeneralButton}" Click="PutCardButton_Click" />
+                <Button x:Name="reselectButton" Content="重选" Width="120" Height="50" Margin="360,35,0,0" Style="{StaticResource GeneralButton}" Click="ReselectButton_Click" />
+                <Button x:Name="skipCardButton" Content="不出" Width="120" Height="50" Margin="100,35,0,0" Style="{StaticResource GeneralButton}" Click="SkipCardButton_Click" />
+                <Button x:Name="putCardButton" Content="出牌" Width="120" Height="50" Margin="100,35,0,0" Style="{StaticResource GeneralButton}" Click="PutCardButton_Click" />
             </StackPanel>
 
             <StackPanel x:Name="buttonPanelOnCall" Margin="0,350,0,200" Orientation="Horizontal" Visibility="Collapsed">

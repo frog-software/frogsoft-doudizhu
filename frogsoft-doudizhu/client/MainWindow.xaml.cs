@@ -199,30 +199,11 @@ namespace frogsoft_doudizhu
         {
             if (selectCardList.Count > 0) // 有选择牌
             {
-                // 此处对selectCardList做一个排序
+                var selected = new Pack(selectCardList);
+                var lastOut = new Pack(currentGame.LastCombination);
 
-                foreach (var card in selectCardList)
-                    ownPutCardList.Add(card);
-
-                if (true) // 允许出牌
+                if (skipCardButton.Visibility == Visibility.Hidden && selected.Category != Category.UNDEFINED || lastOut.Count > 0 && selected > lastOut) // 允许出牌
                 {
-                    foreach (var i in ownCardPanel.Children)
-                    {
-                        Image image = i as Image;
-
-                        if (image.Margin.Bottom == CARD_SELECT_MARGIN)
-                        {
-                            for (var j = 0; j < ownCardList.Count; j++)
-                            {
-                                if (ownCardList[j] == Convert.ToInt32(image.Name[4..]))
-                                {
-                                    ownCardList.RemoveAt(j);
-                                    j--;
-                                }
-                            }
-                        }
-                    }
-
                     currentGame.MessageType = MessageType.UPDATE;
                     currentGame.GetPlayerById(currentPlayer.Id).CardsOut = selectCardList;
                     ws.Send(JsonConvert.SerializeObject(currentGame));
@@ -319,7 +300,7 @@ namespace frogsoft_doudizhu
                 Random random = new Random();
                 currentPlayer.Id = "user" + random.Next(1000).ToString();
                 currentGame.CurrentPlayer = currentPlayer.Id;
-                currentGame.RoomNo = "2";
+                currentGame.RoomNo = "1";
                 currentGame.MessageType = MessageType.JOIN;
 
                 ws.Send(JsonConvert.SerializeObject(currentGame));
@@ -350,21 +331,30 @@ namespace frogsoft_doudizhu
                 }
                 else
                 {
-                    ownCardList = myself.CardsInHand;
+                    ownCardList = new Pack(myself.CardsInHand).getList();
 
                     var leftPlayer = currentGame.GetNextPlayerById(currentGame.GetNextPlayerById(currentPlayer.Id).Id);
                     var rightPlayer = currentGame.GetNextPlayerById(currentPlayer.Id);
 
                     leftPutCardList = leftPlayer.CardsOut;
                     rightPutCardList = rightPlayer.CardsOut;
-                    ownPutCardList = myself.CardsOut;
+                    ownPutCardList = new Pack(myself.CardsOut).getList();
 
                     gameGrid.Dispatcher.Invoke(() =>
                     {
+                        skipCardButton.Visibility = Visibility.Visible;
+
                         if (currentGame.CurrentPlayer == myself.Id && !(myself.Status == PlayerStatus.LANDLORD || myself.Status == PlayerStatus.PEASANT))
                             ButtonPanel_Upgrade(BUTTON_ON_CALL);
                         else if (currentGame.CurrentPlayer == myself.Id && (myself.Status == PlayerStatus.LANDLORD || myself.Status == PlayerStatus.PEASANT))
+                        {
                             ButtonPanel_Upgrade(BUTTON_ON_PLAY);
+
+                            if (leftPlayer.CardsOut.Count == 0 && rightPlayer.CardsOut.Count == 0)
+                                skipCardButton.Visibility = Visibility.Hidden;
+                            else
+                                skipCardButton.Visibility= Visibility.Visible;
+                        }
                         else
                             ButtonPanel_Upgrade(NO_BUTTON);
 
