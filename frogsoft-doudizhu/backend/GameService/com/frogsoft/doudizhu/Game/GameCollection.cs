@@ -83,14 +83,13 @@ namespace backend.GameService.com.frogsoft.doudizhu.Game
                     existingGame.AssignCards();
                 }
 
-                if (existingGame.IsPlayersAllCalled() || existingGame.IsLandlordDetermined())
+                if (!existingGame.HasGameStarted && existingGame.IsPlayersAllCalled() || existingGame.IsLandlordDetermined())
                 {
+                    existingGame.HasGameStarted = true;
                     existingGame.AssignLandlordCards();
                     existingGame.CurrentPlayer = existingGame.GetLandlord().Id;
                 }
             }
-
-
 
 
             return true;
