@@ -49,10 +49,10 @@ int read()
 
 int T = read();
 int n = read();
-while (T-->0)
+while (T-- > 0)
 {
     List<int> list = new List<int>();
-    for(int i = 0; i < n; i++)
+    for (int i = 0; i < n; i++)
     {
         int a = read();
         int b = read();
@@ -68,10 +68,10 @@ while (T-->0)
     Pack pack = new Pack(list);
     pack.Print();
     while (pack.Count > 0)
-    {        
+    {
         Console.WriteLine(pack.MinCase1());
         new Pack(pack.getAnsShouldOut()).Print();
-        pack-=new Pack(pack.getAnsShouldOut());
+        pack -= new Pack(pack.getAnsShouldOut());
     }
-    
+
 }

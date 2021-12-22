@@ -250,7 +250,8 @@ namespace client.Models
         public static bool operator >(Pack pack1, Pack pack2)
         {
             if (pack1 == null || pack2 == null) return false;
-            if (pack1.Category == Category.ROCKET) return true;
+            if (pack1.Category == Category.ROCKET && pack2.Category != Category.ROCKET) return true;
+            if (pack1.Category == Category.BOMB && pack2.Category != Category.BOMB) return true;
             if (pack1.Category != pack2.Category) return false;
             if (pack1.Subtype != pack2.Subtype) return false;
             return pack1.MaxValue > pack2.MaxValue;
@@ -258,6 +259,8 @@ namespace client.Models
         public static bool operator <(Pack pack1, Pack pack2)
         {
             if (pack1 == null || pack2 == null) return false;
+            if (pack2.Category == Category.ROCKET && pack1.Category != Category.ROCKET) return true;
+            if (pack2.Category == Category.BOMB && pack1.Category != Category.BOMB) return true;
             if (pack1.Category != pack2.Category) return false;
             if (pack1.Subtype != pack2.Subtype) return false;
             return pack1.MaxValue < pack2.MaxValue;
