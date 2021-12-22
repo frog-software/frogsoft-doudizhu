@@ -39,13 +39,15 @@ namespace frogsoft_doudizhu
 
         private List<int> lordCardList = new List<int> { 54, 54, 54 };  // 地主牌
 
-        private List<int> ownCardList = new List<int> {  }; // 自己手上的牌
+        private List<int> ownCardList = new List<int> { }; // 自己手上的牌
 
-        private List<int> leftPutCardList = new List<int> {  };     // 上家出的牌
-        private List<int> rightPutCardList = new List<int> {  };    // 下家出的牌
+        private List<int> leftPutCardList = new List<int> { };     // 上家出的牌
+        private List<int> rightPutCardList = new List<int> { };    // 下家出的牌
 
         private List<int> selectCardList = new List<int> { };       // 已选中的牌
         private List<int> ownPutCardList = new List<int> { };       // 打出去的牌
+
+        private List<string> callText = new List<string> { "", "不叫", "一分", "两分", "三分" }; 
 
         private WebSocket ws = new WebSocket("ws://localhost:5174/api/games/com/frogsoft/doudizhu/room");
 
@@ -188,6 +190,7 @@ namespace frogsoft_doudizhu
                 image.Margin = new Thickness { Left = image.Margin.Left, Bottom = CARD_DESELECT_MARGIN };
             }
 
+            currentGame.MessageType = MessageType.UPDATE;
             currentGame.GetPlayerById(currentPlayer.Id).CardsOut = selectCardList;
             ws.Send(JsonConvert.SerializeObject(currentGame));
         }
@@ -196,8 +199,6 @@ namespace frogsoft_doudizhu
         {
             if (selectCardList.Count > 0) // 有选择牌
             {
-                ownPutCardList.Clear();
-
                 // 此处对selectCardList做一个排序
 
                 foreach (var card in selectCardList)
@@ -222,8 +223,10 @@ namespace frogsoft_doudizhu
                         }
                     }
 
+                    currentGame.MessageType = MessageType.UPDATE;
                     currentGame.GetPlayerById(currentPlayer.Id).CardsOut = selectCardList;
                     ws.Send(JsonConvert.SerializeObject(currentGame));
+
                     selectCardList.Clear();
                 }
                 else // 不允许出牌
@@ -316,7 +319,7 @@ namespace frogsoft_doudizhu
                 Random random = new Random();
                 currentPlayer.Id = "user" + random.Next(1000).ToString();
                 currentGame.CurrentPlayer = currentPlayer.Id;
-                currentGame.RoomNo = "8";
+                currentGame.RoomNo = "2";
                 currentGame.MessageType = MessageType.JOIN;
 
                 ws.Send(JsonConvert.SerializeObject(currentGame));
@@ -327,7 +330,6 @@ namespace frogsoft_doudizhu
             ws.OnMessage += (sender, e) =>
             {
                 currentGame = JsonConvert.DeserializeObject<GameModel>(e.Data);
-
 
                 var myself = currentGame.GetPlayerById(currentPlayer.Id);
 
@@ -350,24 +352,12 @@ namespace frogsoft_doudizhu
                 {
                     ownCardList = myself.CardsInHand;
 
-                    leftPutCardList = currentGame.GetNextPlayerById(currentGame.GetNextPlayerById(currentPlayer.Id).Id).CardsOut;
-                    rightPutCardList = currentGame.GetNextPlayerById(currentPlayer.Id).CardsOut;
-                    ownPutCardList = myself.CardsOut;
+                    var leftPlayer = currentGame.GetNextPlayerById(currentGame.GetNextPlayerById(currentPlayer.Id).Id);
+                    var rightPlayer = currentGame.GetNextPlayerById(currentPlayer.Id);
 
-                    if (myself.Status == PlayerStatus.LANDLORD || myself.Status == PlayerStatus.PEASANT)
-                    {
-                        lordCardList = currentGame.list.GetRange(51, 3);
-                        gameGrid.Dispatcher.Invoke(() =>
-                        {
-                            Call_Clear();
-                        });
-                    }
-                    else
-                    {
-                        lordCardList.Clear();
-                        for (int i = 1; i <= 3; i++)
-                            lordCardList.Add(54);
-                    }
+                    leftPutCardList = leftPlayer.CardsOut;
+                    rightPutCardList = rightPlayer.CardsOut;
+                    ownPutCardList = myself.CardsOut;
 
                     gameGrid.Dispatcher.Invoke(() =>
                     {
@@ -377,6 +367,22 @@ namespace frogsoft_doudizhu
                             ButtonPanel_Upgrade(BUTTON_ON_PLAY);
                         else
                             ButtonPanel_Upgrade(NO_BUTTON);
+
+                        if (myself.Status == PlayerStatus.LANDLORD || myself.Status == PlayerStatus.PEASANT)
+                        {
+                            lordCardList = currentGame.list.GetRange(51, 3);
+                            Call_Clear();
+                        }
+                        else
+                        {
+                            lordCardList.Clear();
+                            for (int i = 1; i <= 3; i++)
+                                lordCardList.Add(54);
+
+                            leftCallTextBlock.Text = callText[leftPlayer.CallScore + 1];
+                            ownCallTextBlock.Text = callText[myself.CallScore + 1];
+                            rightCallTextBlock.Text = callText[rightPlayer.CallScore + 1];
+                        }
 
                         LordCardPanel_Upgrade();
                         LeftPutCardPanel_Upgrade();

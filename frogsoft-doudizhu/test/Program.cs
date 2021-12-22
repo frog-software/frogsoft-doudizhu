@@ -67,5 +67,11 @@ while (T-->0)
     }
     Pack pack = new Pack(list);
     pack.Print();
-    Console.WriteLine(pack.MinCase1());
+    while (pack.Count > 0)
+    {        
+        Console.WriteLine(pack.MinCase1());
+        new Pack(pack.getAnsShouldOut()).Print();
+        pack-=new Pack(pack.getAnsShouldOut());
+    }
+    
 }

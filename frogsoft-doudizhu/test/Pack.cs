@@ -62,11 +62,12 @@ namespace test
         public List<Card> Cards { get; }
         public int MaxValue { get; }
         public int Subtype { get; } = 0;
+        public int Count { get { return Cards.Count; } }
         private readonly List<int> Single;
         private readonly List<int> Double;
         private readonly List<int> Triple;
         private readonly List<int> Quard;
-        private Dictionary<int, int> map=new();
+        private Dictionary<int, int> map = new();
         static public void PrintList(List<int> list)
         {
             foreach (var i in list)
@@ -109,17 +110,17 @@ namespace test
                 else map.Add(card.getPriority(), 1);
             });
             Single = (from i in map
-                          where i.Value == 1
-                          select i.Key).ToList();
+                      where i.Value == 1
+                      select i.Key).ToList();
             Double = (from i in map
-                          where i.Value == 2
-                          select i.Key).ToList();
+                      where i.Value == 2
+                      select i.Key).ToList();
             Triple = (from i in map
-                          where i.Value == 3
-                          select i.Key).ToList();
+                      where i.Value == 3
+                      select i.Key).ToList();
             Quard = (from i in map
-                         where i.Value == 4
-                         select i.Key).ToList();
+                     where i.Value == 4
+                     select i.Key).ToList();
 
             // 判断牌型
             Category = Category.UNDEFINED;
@@ -190,7 +191,7 @@ namespace test
                     break;
             }
             // 顺子
-            if (Single.Count == Cards.Count && Single.Count >= 5 && Continuous(Single) && Single[0]<14)
+            if (Single.Count == Cards.Count && Single.Count >= 5 && Continuous(Single) && Single[0] < 14)
             {
                 Category = Category.CHAIN_OF_SOLO;
                 MaxValue = Single[0];
@@ -207,7 +208,7 @@ namespace test
             if (Triple.Count >= 2 && Continuous(Triple) && Triple[0] < 14)
             {
                 // 飞机不带
-                if (Triple.Count * 3 == Cards.Count )
+                if (Triple.Count * 3 == Cards.Count)
                 {
                     Category = Category.CHAIN_OF_TRIO;
                     MaxValue = Triple[0];
@@ -248,9 +249,10 @@ namespace test
         }
         public static bool operator >(Pack pack1, Pack pack2)
         {
-            if(pack1 == null || pack2 == null) return false;
-            if(pack1.Category != pack2.Category) return false;
-            if(pack1.Subtype != pack2.Subtype) return false;
+            if (pack1 == null || pack2 == null) return false;
+            if (pack1.Category == Category.ROCKET) return true;
+            if (pack1.Category != pack2.Category) return false;
+            if (pack1.Subtype != pack2.Subtype) return false;
             return pack1.MaxValue > pack2.MaxValue;
         }
         public static bool operator <(Pack pack1, Pack pack2)
@@ -261,6 +263,15 @@ namespace test
             return pack1.MaxValue < pack2.MaxValue;
         }
         private int __ans = 0;
+        private int findsmall(int key)
+        {
+            int ans = 20;
+            foreach (var i in map)
+            {
+                if (i.Value == key && i.Key < ans) ans = i.Key;
+            }
+            return ans;
+        }
         private int san1()
         {
             int ans = 0;
@@ -273,6 +284,13 @@ namespace test
             // 四带两对
             while (count[4] > 0 && count[2] > 1)
             {
+                if (ShouldOut.Count == 0 || findsmall(4) < findmin(ShouldOut))
+                {
+                    ShouldOut.Clear();
+                    ShouldOut.Add(findsmall(4), 4);
+                    ShouldOut.Add(Double[^1], 2);
+                    ShouldOut.Add(Double[^2], 2);
+                }
                 count[4]--;
                 count[2] -= 2;
                 ans++;
@@ -280,6 +298,12 @@ namespace test
             // 四带二（两张一样）
             while (count[4] > 0 && count[2] > 0)
             {
+                if (ShouldOut.Count == 0 || findsmall(4) < findmin(ShouldOut))
+                {
+                    ShouldOut.Clear();
+                    ShouldOut.Add(findsmall(4), 4);
+                    ShouldOut.Add(Double[^1], 2);
+                }
                 count[4]--;
                 count[2]--;
                 ans++;
@@ -287,6 +311,13 @@ namespace test
             // 四带一（两张不一样）
             while (count[4] > 0 && count[1] > 1)
             {
+                if (ShouldOut.Count == 0 || findsmall(4) < findmin(ShouldOut))
+                {
+                    ShouldOut.Clear();
+                    ShouldOut.Add(findsmall(4), 4);
+                    ShouldOut.Add(Single[^1], 1);
+                    ShouldOut.Add(Single[^2], 1);
+                }
                 count[4]--;
                 count[1] -= 2;
                 ans++;
@@ -294,6 +325,12 @@ namespace test
             // 三带一对
             while (count[3] > 0 && count[2] > 0)
             {
+                if (ShouldOut.Count == 0 || findsmall(3) < findmin(ShouldOut))
+                {
+                    ShouldOut.Clear();
+                    ShouldOut.Add(findsmall(3), 3);
+                    ShouldOut.Add(Double[^1], 2);
+                }
                 count[3]--;
                 count[2]--;
                 ans++;
@@ -301,6 +338,12 @@ namespace test
             // 三带一
             while (count[3] > 0 && count[1] > 0)
             {
+                if (ShouldOut.Count == 0 || findsmall(3) < findmin(ShouldOut))
+                {
+                    ShouldOut.Clear();
+                    ShouldOut.Add(findsmall(3), 3);
+                    ShouldOut.Add(Single[^1], 1);
+                }
                 count[3]--;
                 count[1]--;
                 ans++;
@@ -317,13 +360,43 @@ namespace test
                 count[4] -= 2;
                 ans++;
             }
-
-            if (canRocket && count[1] > 1) {
+            if (count[1] > 0 && (ShouldOut.Count == 0 || Single[count[1] - 1] < findmin(ShouldOut)))
+            {
+                ShouldOut.Clear();
+                ShouldOut.Add(Single[count[1] - 1], 1);
+            }
+            if (count[2] > 0 && (ShouldOut.Count == 0 || Double[count[2] - 1] < findmin(ShouldOut)))
+            {
+                ShouldOut.Clear();
+                ShouldOut.Add(Double[count[2] - 1], 2);
+            }
+            if (count[3] > 0 && (ShouldOut.Count == 0 || Triple[count[3] - 1] < findmin(ShouldOut)))
+            {
+                ShouldOut.Clear();
+                ShouldOut.Add(Triple[count[3] - 1], 3);
+            }
+            if (count[4] > 0 && (ShouldOut.Count == 0 || Quard[count[4] - 1] < findmin(ShouldOut)))
+            {
+                ShouldOut.Clear();
+                ShouldOut.Add(Quard[count[4] - 1], 4);
+            }
+            if (canRocket && count[1] > 1)
+            {
                 return ans + count[1] + count[2] + count[3] + count[4] - 1;
-            } else
+            }
+            else
             {
                 return ans + count[1] + count[2] + count[3] + count[4];
-             }
+            }
+        }
+        private int findmin(Dictionary<int, int> d)
+        {
+            int min = 20;
+            foreach (var i in d)
+            {
+                if (i.Key < min) min = i.Key;
+            }
+            return min;
         }
         private void feiji(int step)
         {
@@ -334,9 +407,17 @@ namespace test
                 for (int i = len; i >= 2; i--)
                 {
                     int r = l + i - 1;
+                    Dictionary<int, int> temp = new(ShouldOut);
+                    if (ShouldOut.Count == 0 || l < findmin(ShouldOut))
+                    {
+                        ShouldOut.Clear();
+                        for (int k = l; k <= r; k++)
+                            ShouldOut.Add(k, 3);
+                    }
                     for (int k = l; k <= r; k++) map[k] -= 3;
                     chupai(step + 1);
                     for (int k = l; k <= r; k++) map[k] += 3;
+                    ShouldOut = temp;
                 }
             }
         }
@@ -349,9 +430,17 @@ namespace test
                 for (int i = len; i >= 3; i--)
                 {
                     int r = l + i - 1;
+                    Dictionary<int, int> temp = new(ShouldOut);
+                    if (ShouldOut.Count == 0 || l < findmin(ShouldOut))
+                    {
+                        ShouldOut.Clear();
+                        for (int k = l; k <= r; k++)
+                            ShouldOut.Add(k, 2);
+                    }
                     for (int k = l; k <= r; k++) map[k] -= 2;
                     chupai(step + 1);
                     for (int k = l; k <= r; k++) map[k] += 2;
+                    ShouldOut = temp;
                 }
             }
         }
@@ -364,27 +453,102 @@ namespace test
                 for (int i = len; i >= 5; i--)
                 {
                     int r = l + i - 1;
+                    Dictionary<int, int> temp = new(ShouldOut);
+                    if (ShouldOut.Count == 0 || l < findmin(ShouldOut))
+                    {
+                        ShouldOut.Clear();
+                        for (int k = l; k <= r; k++)
+                            ShouldOut.Add(k, 1);
+                    }
                     for (int k = l; k <= r; k++) map[k] -= 1;
                     chupai(step + 1);
                     for (int k = l; k <= r; k++) map[k] += 1;
+                    ShouldOut = temp;
                 }
             }
         }
         private void chupai(int step)
         {
             if (step >= __ans) return;
+
+            Dictionary<int, int> temp = new(ShouldOut);
             int san = san1();
-            __ans=Math.Min(__ans, step+san);
+            if (step + san < __ans)
+            {
+                __ans = step + san;
+                AnsShouldOut = new(ShouldOut);
+            }
+            ShouldOut = temp;
             feiji(step);
             liandui(step);
             shunzi(step);
         }
+        private Dictionary<int, int> ShouldOut = new();
+        private Dictionary<int, int> AnsShouldOut = new();
+        public List<int> getAnsShouldOut()
+        {
+            List<int> ans = new();
+            if (AnsShouldOut == null) return ans;
+            Dictionary<int, int> temp = new Dictionary<int, int>(AnsShouldOut);
+            foreach (Card card in Cards)
+            {
+                if (temp.ContainsKey(card.getPriority()) && temp[card.getPriority()] > 0)
+                {
+                    ans.Add(card.getId());
+                    temp[card.getPriority()]--;
+                }
+            }
+            return new Pack(ans).getList();
+        }
+
         public int MinCase1()
         {
+            ShouldOut = new Dictionary<int, int>();
             __ans = 0x3f3f3f3f;
             chupai(0);
             return __ans;
         }
+        public static Pack operator -(Pack p1, Pack p2)
+        {
+            List<int> l1 = p1.getList();
+            List<int> l2 = p2.getList();
+            foreach (int i in l2)
+            {
+                if (l1.Contains(i)) l1.Remove(i);
+            }
+            return new Pack(l1);
+        }
+        public List<int> NextPack(Pack p)
+        {
+            int min = this.MinCase1();
+            Pack ansPack = new Pack(new List<int>());
+            int ans = 0x3f3f3f;
+            for (int i = 0; i < 1 << p.Count; i++)
+            {
+                List<int> list = new();
+                string s = Convert.ToString(i, 2);
+                for (int k = 0; k < p.Count; k++)
+                    if (s[k] == '1')
+                    {
+                        list.Add(k);
+                    }
+                Pack pack = new Pack(list);
+                if (pack > p)
+                {
+                    Pack t = this - pack;
+                    int temp = t.MinCase1();
+                    if (temp < ans)
+                    {
+                        ans = temp;
+                        ansPack = pack;
+                    }
+                }
+            }
+            if (ans < min + 4)
+            {
+                return ansPack.getList();
+            }
+            else return new List<int>();
+        }
     }
-
 }
