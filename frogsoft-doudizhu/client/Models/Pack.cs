@@ -541,21 +541,24 @@ namespace client.Models
         {
             int min = this.MinCase1();
             Pack ansPack = new Pack(new List<int>());
-            int ans = 0x3f3f3f;
-            for (int i = 0; i < 1 << p.Count; i++)
+            int ans = 0x3f3f3f3f;
+            for (int i = 0; i < 1 << Count; i++)
             {
                 List<int> list = new();
-                string s = Convert.ToString(i, 2).PadLeft(p.Count, '0');
-                for (int k = 0; k < p.Count; k++)
+                string s = Convert.ToString(i, 2).PadLeft(Count, '0');
+                for (int k = 0; k < Count; k++)
                     if (s[k] == '1')
                     {
-                        list.Add(k);
+                        list.Add(Cards[k].getId());
                     }
+
                 Pack pack = new Pack(list);
                 if (pack > p)
                 {
+                    Pack.PrintList(pack.getList());
                     Pack t = this - pack;
                     int temp = t.MinCase1();
+                    Console.WriteLine("{0}-{1}", s, temp);
                     if (temp < ans)
                     {
                         ans = temp;

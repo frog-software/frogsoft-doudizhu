@@ -73,5 +73,9 @@ while (T-- > 0)
         new Pack(pack.getAnsShouldOut()).Print();
         pack -= new Pack(pack.getAnsShouldOut());
     }
-
+    pack = new Pack(list);
+    pack.NextPack(new Pack(new List<int> { 11 }));
+    new Pack(pack.NextPack(new Pack(new List<int> { 3 }))).Print();
+    Console.WriteLine("end");
 }
+
