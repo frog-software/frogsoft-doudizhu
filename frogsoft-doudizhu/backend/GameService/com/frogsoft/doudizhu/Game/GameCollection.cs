@@ -55,7 +55,11 @@ namespace backend.GameService.com.frogsoft.doudizhu.Game
 
 
             // the remote current player will soon be the last
-            existingGame.LastCombination = playerInRemoteGame.CardsOut;
+            if (playerInRemoteGame.CardsOut.Count > 0)
+            {
+                existingGame.LastCombination = playerInRemoteGame.CardsOut;
+            }
+           
 
 
 
