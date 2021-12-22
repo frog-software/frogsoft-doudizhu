@@ -76,7 +76,7 @@
             </StackPanel>
         </Grid>
 
-        <Grid x:Name="gameGrid" Visibility="Collapsed">
+        <Grid x:Name="gameGrid" Visibility="Visible">
             <TextBlock x:Name="ownCallTextBlock" Text="" Style="{StaticResource GeneralText}" Margin="585,170,585,0" />
             <TextBlock x:Name="leftCallTextBlock" Text="" Style="{StaticResource GeneralText}" Margin="215,200,955,464" Foreground="#FFEDD7BD" />
             <TextBlock x:Name="rightCallTextBlock" Text="" Style="{StaticResource GeneralText}" Margin="695,200,67,464" Foreground="#FFEDD7BD" />
@@ -96,8 +96,9 @@
                 <Button x:Name="reselectButton" Content="重选" Width="120" Height="50" Margin="360,0,0,165" Style="{StaticResource GeneralButton}" Click="ReselectButton_Click" />
                 <Button x:Name="skipCardButton" Content="不出" Width="120" Height="50" Margin="100,0,0,165" Style="{StaticResource GeneralButton}" Click="SkipCardButton_Click" />
                 <Button x:Name="putCardButton" Content="出牌" Width="120" Height="50" Margin="100,0,0,165" Style="{StaticResource GeneralButton}" Click="PutCardButton_Click" />
-                <Button x:Name="autoPlayButton" Content="托管" Width="160" Height="50" Margin="160,200,0,0" Style="{StaticResource GeneralButton}" Click="AutoPlayButton_Click" />
             </StackPanel>
+
+            <Button x:Name="autoPlayButton" Content="托管" Width="160" Height="50" Margin="1060,600,0,0" Style="{StaticResource GeneralButton}" Click="AutoPlayButton_Click" Visibility="Collapsed"/>
 
             <StackPanel x:Name="buttonPanelOnCall" Margin="0,350,0,200" Orientation="Horizontal" Visibility="Collapsed">
                 <Button x:Name="callNo" Content="不叫" Width="120" Height="50" Margin="280,35,0,0" Style="{StaticResource GeneralButton}" Click="CallNo_Click" />

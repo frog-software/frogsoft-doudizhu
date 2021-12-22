@@ -169,8 +169,11 @@ namespace frogsoft_doudizhu
                     break;
                 case BUTTON_ON_PLAY:
                     buttonPanelOnPlay.Visibility = Visibility.Visible;
+                    autoPlayButton.Visibility = Visibility.Visible;
                     break;
             }
+
+
         }
 
         private void ReselectButton_Click(object sender, RoutedEventArgs e) // 重选
@@ -302,7 +305,7 @@ namespace frogsoft_doudizhu
                 Random random = new Random();
                 currentPlayer.Id = "user" + random.Next(1000).ToString();
                 currentGame.CurrentPlayer = currentPlayer.Id;
-                currentGame.RoomNo = "429";
+                currentGame.RoomNo = "50";
                 currentGame.MessageType = MessageType.JOIN;
 
                 ws.Send(JsonConvert.SerializeObject(currentGame));
@@ -359,6 +362,8 @@ namespace frogsoft_doudizhu
 
                             if (isAuto)
                             {
+                                System.Threading.Thread.Sleep(3000);
+
                                 if (skipCardButton.Visibility == Visibility.Hidden)
                                 {
                                     var pack = new Pack(ownCardList);
@@ -419,6 +424,8 @@ namespace frogsoft_doudizhu
             isAuto = !isAuto;
             if (isAuto)
             {
+                System.Threading.Thread.Sleep(3000);
+
                 autoPlayButton.Content = "取消托管";
                 if (skipCardButton.Visibility == Visibility.Hidden)
                 {
