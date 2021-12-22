@@ -76,14 +76,14 @@ namespace backend.GameService.com.frogsoft.doudizhu.Game
             if (existingGame.IsPlayersAllReady())
             {
                 // move to next player
-                existingGame.CurrentPlayer = existingGame.GetNextPlayerById(existingGame.CurrentPlayer).Id;
+                existingGame.CurrentPlayer = existingGame.GetNextPlayerById(playerInExistingGame.Id).Id;
 
                 if (existingGame.IsPlayerAllNoCards())
                 {
                     existingGame.AssignCards();
                 }
 
-                if (!existingGame.HasGameStarted && existingGame.IsPlayersAllCalled() || existingGame.IsLandlordDetermined())
+                if (!existingGame.HasGameStarted && (existingGame.IsPlayersAllCalled() || existingGame.IsLandlordDetermined()))
                 {
                     existingGame.HasGameStarted = true;
                     existingGame.AssignLandlordCards();
