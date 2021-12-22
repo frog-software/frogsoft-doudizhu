@@ -13,6 +13,8 @@
 
         public List<int> LastCombination = new List<int>();
 
+        public string LastPlayer {  get; set; }
+
         public string RoomNo { get; set; }
 
         public List<int> list = new List<int>();
@@ -68,6 +70,11 @@
             return Players[nextIdx];
         }
 
+        public PlayerModel GetLandlord()
+        {
+            return Players.FirstOrDefault(p => p.Status == PlayerStatus.LANDLORD);
+        }
+
         public void RemovePlayerById(string playerId)
         {
             Players.RemoveAll(p => p.Id == playerId);
@@ -107,6 +114,21 @@
             }
             return allCalled;
 
+        }
+
+        public bool IsLandlordDetermined()
+        {
+            if (Players.Count < 3)
+            {
+                return false;
+            }
+
+            foreach (PlayerModel player in Players)
+            {
+                if (player.Status == PlayerStatus.LANDLORD || player.Status == PlayerStatus.PEASANT)
+                    return true;
+            }
+            return false;
         }
 
         public bool IsPlayerAllNoCards()

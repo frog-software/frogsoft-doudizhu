@@ -130,7 +130,7 @@ namespace backend.GameService.com.frogsoft.doudizhu.WS
                         var clients = WebsocketClientCollection.GetRoomClients(client.RoomNo);
                         clients.ForEach(c =>
                         {
-                            client.SendMessageAsync(JsonConvert.SerializeObject(GameCollection.GetGameByRoomNo(client.RoomNo)));
+                            c.SendMessageAsync(JsonConvert.SerializeObject(GameCollection.GetGameByRoomNo(client.RoomNo)));
                         });
                         _logger.LogInformation($"Websocket client {message.CurrentPlayer} updated {client.RoomNo}");
 
@@ -141,7 +141,7 @@ namespace backend.GameService.com.frogsoft.doudizhu.WS
                     {
                         var roomNo = client.RoomNo;
                         client.RoomNo = "";
-                        client.SendMessageAsync($"player {message.CurrentPlayer} leave room {roomNo} success .");
+                        client.SendMessageAsync($"{{\"msg\": \"player {message.CurrentPlayer} leave room {roomNo} success.\"}}");
                         _logger.LogInformation($"Websocket client {message.CurrentPlayer} leave room {roomNo}");
                         
                         var game = GameCollection.GetGameByRoomNo(roomNo);

@@ -12,7 +12,7 @@ namespace backend.GameService.com.frogsoft.doudizhu.Game
 
             if (existingGame != null)
             {
-                if( existingGame.Players.Count >=3)
+                if (existingGame.Players.Count >= 3)
                 {
                     return false;
                 }
@@ -36,7 +36,7 @@ namespace backend.GameService.com.frogsoft.doudizhu.Game
         {
             var existingGame = GetGameByRoomNo(remoteGame.RoomNo);
 
-            if(existingGame == null)
+            if (existingGame == null)
             {
                 return false;
             }
@@ -52,7 +52,24 @@ namespace backend.GameService.com.frogsoft.doudizhu.Game
 
             playerInExistingGame.CopyFrom(playerInRemoteGame);
 
+
+
+            // the remote current player will soon be the last
             existingGame.LastCombination = playerInRemoteGame.CardsOut;
+
+
+            if (existingGame.LastPlayer == playerInRemoteGame.Id)
+            {
+                existingGame.Players[0].CardsOut = new List<int>();
+                existingGame.Players[1].CardsOut = new List<int>();
+                existingGame.Players[2].CardsOut = new List<int>();
+            }
+
+            if (playerInRemoteGame.CardsOut.Count > 0)
+            {
+                existingGame.LastPlayer = playerInExistingGame.Id;
+            }
+
 
             existingGame.DetermineLandlord();
 
@@ -66,13 +83,14 @@ namespace backend.GameService.com.frogsoft.doudizhu.Game
                     existingGame.AssignCards();
                 }
 
-                if(existingGame.IsPlayersAllCalled())
+                if (existingGame.IsPlayersAllCalled() || existingGame.IsLandlordDetermined())
                 {
                     existingGame.AssignLandlordCards();
+                    existingGame.CurrentPlayer = existingGame.GetLandlord().Id;
                 }
             }
 
-            
+
 
 
             return true;

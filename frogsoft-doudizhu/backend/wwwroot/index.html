@@ -274,20 +274,42 @@
 
             const reses = [
                 (res) => { // 0, room 0, player 0 join
-                    console.log(res)
-                    return res === '{"LastCombination":[],"list":[],"MessageType":0,"Players":[{"CardsInHand":[],"CardsOut":[],"CallScore":-1,"Id":"0","Status":0}],"CurrentPlayer":null,"CurrentPlayerConnectionId":null,"Message":"","RoomNo":"0"}'
+                    const resObj = JSON.parse(res);
+                    console.log(resObj)
+                    return resObj.list.length === 0 &&
+                        resObj.Players.length === 1 &&
+                        resObj.CurrentPlayer === null
                 },
                 (res) => { // 1, room 0, player 1 join
-                    return res === '{"LastCombination":[],"list":[],"MessageType":0,"Players":[{"CardsInHand":[],"CardsOut":[],"CallScore":-1,"Id":"0","Status":0},{"CardsInHand":[],"CardsOut":[],"CallScore":-1,"Id":"1","Status":0}],"CurrentPlayer":null,"CurrentPlayerConnectionId":null,"Message":"","RoomNo":"0"}'
+                    const resObj = JSON.parse(res);
+                    console.log(resObj)
+                    return resObj.list.length === 0 &&
+                        resObj.Players.length === 2 &&
+                        resObj.CurrentPlayer === null
                 },
                 (res) => { // 2, room 0, player 2 join
-                    return res === '{"LastCombination":[],"list":[],"MessageType":0,"Players":[{"CardsInHand":[],"CardsOut":[],"CallScore":-1,"Id":"0","Status":0},{"CardsInHand":[],"CardsOut":[],"CallScore":-1,"Id":"1","Status":0},{"CardsInHand":[],"CardsOut":[],"CallScore":-1,"Id":"2","Status":0}],"CurrentPlayer":null,"CurrentPlayerConnectionId":null,"Message":"","RoomNo":"0"}'
+                    const resObj = JSON.parse(res);
+                    console.log(resObj)
+                    return resObj.list.length === 0 &&
+                        resObj.Players.length === 3 &&
+                        resObj.CurrentPlayer === null
                 },
                 (res) => { // 3, room 0, player 0 ready
-                    return res === '{"LastCombination":[],"list":[],"MessageType":0,"Players":[{"CardsInHand":[],"CardsOut":[],"CallScore":-1,"Id":"0","Status":1},{"CardsInHand":[],"CardsOut":[],"CallScore":-1,"Id":"1","Status":0},{"CardsInHand":[],"CardsOut":[],"CallScore":-1,"Id":"2","Status":0}],"CurrentPlayer":null,"CurrentPlayerConnectionId":null,"Message":"","RoomNo":"0"}'
+                    const resObj = JSON.parse(res);
+                    console.log(resObj)
+                    return resObj.list.length === 0 &&
+                        resObj.Players.length === 3 &&
+                        resObj.CurrentPlayer === null &&
+                        resObj.Players[0].Status === 1
                 },
                 (res) => { // 4, room 0, player 1 ready
-                    return res === '{"LastCombination":[],"list":[],"MessageType":0,"Players":[{"CardsInHand":[],"CardsOut":[],"CallScore":-1,"Id":"0","Status":1},{"CardsInHand":[],"CardsOut":[],"CallScore":-1,"Id":"1","Status":1},{"CardsInHand":[],"CardsOut":[],"CallScore":-1,"Id":"2","Status":0}],"CurrentPlayer":null,"CurrentPlayerConnectionId":null,"Message":"","RoomNo":"0"}'
+                    const resObj = JSON.parse(res);
+                    console.log(resObj)
+                    return resObj.list.length === 0 &&
+                        resObj.Players.length === 3 &&
+                        resObj.CurrentPlayer === null &&
+                        resObj.Players[0].Status === 1 &&
+                        resObj.Players[1].Status === 1
                 },
                 (res) => { // 5, room 0, player 2 ready
                     const resObj = JSON.parse(res);
@@ -299,7 +321,6 @@
                             ...nextMsg.Players[i],
                         }
                     }
-
                     return resObj.Players[0].CardsInHand.length === 17 &&
                         resObj.Players[1].CardsInHand.length === 17 &&
                         resObj.Players[2].CardsInHand.length === 17 &&
@@ -367,6 +388,14 @@
                 (res) => { // 8, room 0, player 2 call 3
                     const resObj = JSON.parse(res);
                     console.log(resObj)
+
+                    // const nextMsg = msgs[9]
+                    // for (let i = 0; i < 3; i++) {
+                    //     nextMsg.Players[i] = {
+                    //         ...resObj.Players[i],
+                    //         ...nextMsg.Players[i],
+                    //     }
+                    // }
                     return resObj.Players[0].CardsInHand.length === 17 &&
                         resObj.Players[1].CardsInHand.length === 17 &&
                         resObj.Players[2].CardsInHand.length === 20 &&
@@ -379,8 +408,11 @@
                         resObj.Players[0].Status === 3 &&
                         resObj.Players[1].Status === 3 &&
                         resObj.Players[2].Status === 2 &&
-                        resObj.CurrentPlayer === "0"
+                        resObj.CurrentPlayer === "2"
                 },
+                (res) => { // 9, room 0, player 2 (landlord), move card 1
+                    
+                }
 
 
             ]
