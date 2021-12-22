@@ -246,5 +246,21 @@ namespace frogsoft_doudizhu
                 MessageBox.Show("请选择牌！");
             }
         }
+
+        private void MainPanel_Upgrade()
+        {
+
+        }
+
+        private void StartGame_Click(object sender, RoutedEventArgs e)
+        {
+            mainGrid.Visibility = Visibility.Collapsed;
+            gameGrid.Visibility = Visibility.Visible;
+        }
+
+        private void QuitGame_Click(object sender, RoutedEventArgs e)
+        {
+            window.Close();
+        }
     }
 }
