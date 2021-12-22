@@ -19,9 +19,13 @@ namespace client.Models
 
         public List<int> LastCombination = new List<int>();
 
+        public string LastPlayer { get; set; }
+
         public string RoomNo { get; set; }
 
         public List<int> list = new List<int>();
+
+        public bool HasGameStarted { get; set; } = false;
 
         public PlayerModel GetPlayerById(string id)
         {
