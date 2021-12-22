@@ -55,7 +55,16 @@ namespace backend.GameService.com.frogsoft.doudizhu.Game
 
 
             // the remote current player will soon be the last
-            existingGame.LastCombination = playerInRemoteGame.CardsOut;
+            if (playerInRemoteGame.CardsOut.Count > 0)
+            {
+                existingGame.LastCombination = playerInRemoteGame.CardsOut;
+
+                foreach(int card in playerInExistingGame.CardsOut)
+                {
+                    playerInExistingGame.CardsInHand.Remove(card);
+                }
+            }
+           
 
 
 
@@ -86,7 +95,10 @@ namespace backend.GameService.com.frogsoft.doudizhu.Game
                 }
             }
 
-            if (existingGame.LastPlayer == existingGame.CurrentPlayer)
+            if (existingGame.LastPlayer == existingGame.CurrentPlayer &&
+                existingGame.LastPlayer != null &&
+                existingGame.CurrentPlayer != null &&
+                existingGame.Players.Count >= 3)
             {
                 existingGame.Players[0].CardsOut = new List<int>();
                 existingGame.Players[1].CardsOut = new List<int>();
