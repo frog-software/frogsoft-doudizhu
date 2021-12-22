@@ -5,12 +5,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:frogsoft_doudizhu"
         mc:Ignorable="d"
-        Title="MainWindow" Height="720" Width="1280" MinWidth="1280" MinHeight="720" MaxWidth="1280" MaxHeight="720" WindowChrome.WindowChrome="{DynamicResource WindowChromeKey}" AllowsTransparency="True" WindowStyle="None" ResizeMode="NoResize" WindowState="Maximized">
+        Title="MainWindow" 
+        Height="720" Width="1280" MinWidth="1280" MinHeight="720" MaxWidth="1280" MaxHeight="720" 
+        WindowChrome.WindowChrome="{DynamicResource WindowChromeKey}" AllowsTransparency="True" WindowStyle="None" ResizeMode="NoResize" WindowState="Maximized"
+        WindowStartupLocation="CenterScreen">
     
     <Window.Background>
         <ImageBrush ImageSource="/images/others/background.jpg"/>
     </Window.Background>
-    
+
     <Window.Resources>
         <WindowChrome x:Key="WindowChromeKey">
             <WindowChrome.ResizeBorderThickness>
@@ -46,49 +49,43 @@
             </Setter>
         </Style>
     </Window.Resources>
-    
+
     <Grid>
+        <Grid x:Name="logoGrid" Background="#FFFFFF" Visibility="Collapsed">
+            <Image Source="/images/others/title1.png" Margin="381,132,89,132" />
+            <Image Source="/images/others/logo.png" Margin="76,212,922,232"/>
+        </Grid>
+
         <Grid x:Name="mainGrid" >
             <Image Source="/images/others/title3.png" Margin="211,52,211,340"/>
 
             <StackPanel x:Name="mainPanel">
                 <Button x:Name="startGame" Content="开始匹配" Width="280" Height="50" Margin="0, 480, 0, 0" Style="{StaticResource GeneralButton}" Click="StartGame_Click" />
-
                 <Button x:Name="quitGame" Content="退出游戏" Width="280" Height="50" Margin="0, 30, 0, 0" Style="{StaticResource GeneralButton}" Click="QuitGame_Click" />
             </StackPanel>
         </Grid>
 
         <Grid x:Name="gameGrid" Visibility="Collapsed">
             <StackPanel x:Name="lordCardPanel" Margin="0,0,0,550" Orientation="Horizontal" />
-
             <StackPanel x:Name="leftCardPanel" Margin="0,405,0,0" Orientation="Horizontal" />
 
             <StackPanel x:Name="putCardPanel" Margin="0,250,0,280" Orientation="Horizontal" />
-
             <StackPanel x:Name="leftPutCardPanel" Margin="0,140,450,400" Orientation="Horizontal"/>
             <StackPanel x:Name="rightPutCardPanel" Margin="450,140,0,400" Orientation="Horizontal"/>
 
             <StackPanel x:Name="buttonPanelOnPlay" Margin="0,350,0,200" Orientation="Horizontal">
                 <Button Content="重选" Width="120" Height="50" Margin="360, 35, 0, 0" Style="{StaticResource GeneralButton}" Click="ReselectButton_Click" />
-
                 <Button Content="不出" Width="120" Height="50" Margin="100, 35, 0, 0" Style="{StaticResource GeneralButton}" Click="SkipCardButton_Click" />
-
                 <Button Content="出牌" Width="120" Height="50" Margin="100, 35, 0, 0" Style="{StaticResource GeneralButton}" Click="PutCardButton_Click" />
             </StackPanel>
 
             <StackPanel x:Name="buttonPanelOnCall" Margin="0,350,0,200" Orientation="Horizontal">
                 <Button Content="不叫" Width="120" Height="50" Margin="280, 35, 0, 0" Style="{StaticResource GeneralButton}" />
-
                 <Button Content="一分" Width="120" Height="50" Margin="80, 35, 0, 0" Style="{StaticResource GeneralButton}" />
-
                 <Button Content="两分" Width="120" Height="50" Margin="80, 35, 0, 0" Style="{StaticResource GeneralButton}" />
-
                 <Button Content="三分" Width="120" Height="50" Margin="80, 35, 0, 0" Style="{StaticResource GeneralButton}" />
             </StackPanel>
         </Grid>
-
     </Grid>
-
-
-
+    
 </Window>

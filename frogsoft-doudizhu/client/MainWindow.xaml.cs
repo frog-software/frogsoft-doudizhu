@@ -247,18 +247,18 @@ namespace frogsoft_doudizhu
             }
         }
 
-        private void MainPanel_Upgrade()
+        private void LogoGrid_Upgrade() // Logo更新动画
         {
 
         }
 
-        private void StartGame_Click(object sender, RoutedEventArgs e)
+        private void StartGame_Click(object sender, RoutedEventArgs e) // 开始匹配
         {
             mainGrid.Visibility = Visibility.Collapsed;
             gameGrid.Visibility = Visibility.Visible;
         }
 
-        private void QuitGame_Click(object sender, RoutedEventArgs e)
+        private void QuitGame_Click(object sender, RoutedEventArgs e) // 退出游戏
         {
             window.Close();
         }
