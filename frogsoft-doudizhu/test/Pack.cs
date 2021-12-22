@@ -28,9 +28,15 @@ namespace test
         {
             if (Value != other.Value)
                 return priority[Value].CompareTo(priority[other.Value]);
-            else return Suit.CompareTo(other.Suit);
+            else return -Suit.CompareTo(other.Suit);
         }
         public int getPriority() { return priority[Value]; }
+        public int getId()
+        {
+            if (Value == 15) return 53;
+            if (Value == 14) return 52;
+            return (Value - 1) * 4 + (int)Suit;
+        }
     }
     enum Category
     {
@@ -56,53 +62,64 @@ namespace test
         public List<Card> Cards { get; }
         public int MaxValue { get; }
         public int Subtype { get; } = 0;
-        public Pack(List<int> _card)
+        private readonly List<int> Single;
+        private readonly List<int> Double;
+        private readonly List<int> Triple;
+        private readonly List<int> Quard;
+        private Dictionary<int, int> map=new();
+        static public void PrintList(List<int> list)
         {
-            // 将输入的字符串序列转化为Card序列并排序
-            Cards = new List<Card>();
-            Dictionary<int, int> map = new Dictionary<int, int>();
-            _card.ForEach(id =>
-            {
-                Cards.Add(new Card(id));
-            });
-            Cards.Sort();
-            Cards.Reverse();
+            foreach (var i in list)
+                Console.Write("{0} ", i.ToString());
+            Console.WriteLine();
+        }
+        public void Print()
+        {
             Console.WriteLine("手中的牌为");
             foreach (Card card in Cards)
                 Console.WriteLine("{0} {1}",
                 card.Value.ToString(), card.Suit.ToString());
 
             Console.WriteLine("\n统计量：");
+            PrintList(Single);
+            PrintList(Double);
+            PrintList(Triple);
+            PrintList(Quard);
+
+            Console.WriteLine("\n牌型");
+            Console.WriteLine(Category.ToString());
+            PrintList(getList());
+            Console.WriteLine("\n====================");
+        }
+        public Pack(List<int> _card)
+        {
+            // 将输入的字符串序列转化为Card序列并排序
+            Cards = new List<Card>();
+            _card.ForEach(id =>
+            {
+                Cards.Add(new Card(id));
+            });
+            Cards.Sort();
+            Cards.Reverse();
+
             // 统计单、对、三的数量，后续判断牌型使用
             Cards.ForEach(card =>
             {
                 if (map.ContainsKey(card.getPriority())) map[card.getPriority()]++;
                 else map.Add(card.getPriority(), 1);
             });
-            var Single = (from i in map
+            Single = (from i in map
                           where i.Value == 1
                           select i.Key).ToList();
-            foreach (var i in Single)
-                Console.Write("{0} ", i.ToString());
-            Console.WriteLine();
-            var Double = (from i in map
+            Double = (from i in map
                           where i.Value == 2
                           select i.Key).ToList();
-            foreach (var i in Double)
-                Console.Write("{0} ", i.ToString());
-            Console.WriteLine();
-            var Triple = (from i in map
+            Triple = (from i in map
                           where i.Value == 3
                           select i.Key).ToList();
-            foreach (var i in Triple)
-                Console.Write("{0} ", i.ToString());
-            Console.WriteLine();
-            var Quard = (from i in map
+            Quard = (from i in map
                          where i.Value == 4
                          select i.Key).ToList();
-            foreach (var i in Quard)
-                Console.Write("{0} ", i.ToString());
-            Console.WriteLine();
 
             // 判断牌型
             Category = Category.UNDEFINED;
@@ -157,7 +174,7 @@ namespace test
                     break;
                 case 6:
                     // 四带单
-                    if (Quard.Count == 1 && Single.Count == 2)
+                    if (Quard.Count == 1)
                     {
                         MaxValue = Quard[0];
                         Category = Category.QUAD_WITH_SOLO;
@@ -214,9 +231,6 @@ namespace test
                     }
                 }
             }
-            Console.WriteLine("\n牌型");
-            Console.WriteLine(Category.ToString());
-            Console.WriteLine("\n====================");
         }
         static private bool Continuous(List<int> list)
         {
@@ -224,6 +238,152 @@ namespace test
             for (int i = 1; i < list.Count; i++)
                 if (list[i] != list[i - 1] - 1) return false;
             return true;
+        }
+        public List<int> getList()
+        {
+            List<int> list = new List<int>();
+            foreach (Card card in Cards)
+                list.Add(card.getId());
+            return list;
+        }
+        public static bool operator >(Pack pack1, Pack pack2)
+        {
+            if(pack1 == null || pack2 == null) return false;
+            if(pack1.Category != pack2.Category) return false;
+            if(pack1.Subtype != pack2.Subtype) return false;
+            return pack1.MaxValue > pack2.MaxValue;
+        }
+        public static bool operator <(Pack pack1, Pack pack2)
+        {
+            if (pack1 == null || pack2 == null) return false;
+            if (pack1.Category != pack2.Category) return false;
+            if (pack1.Subtype != pack2.Subtype) return false;
+            return pack1.MaxValue < pack2.MaxValue;
+        }
+        private int __ans = 0;
+        private int san1()
+        {
+            int ans = 0;
+            bool canRocket = map.ContainsKey(14) && map[14] == 1 && map.ContainsKey(15) && map[15] == 1;
+            int[] count = new int[5];
+            foreach (var i in map)
+            {
+                count[i.Value]++;
+            }
+            // 四带两对
+            while (count[4] > 0 && count[2] > 1)
+            {
+                count[4]--;
+                count[2] -= 2;
+                ans++;
+            }
+            // 四带二（两张一样）
+            while (count[4] > 0 && count[2] > 0)
+            {
+                count[4]--;
+                count[2]--;
+                ans++;
+            }
+            // 四带一（两张不一样）
+            while (count[4] > 0 && count[1] > 1)
+            {
+                count[4]--;
+                count[1] -= 2;
+                ans++;
+            }
+            // 三带一对
+            while (count[3] > 0 && count[2] > 0)
+            {
+                count[3]--;
+                count[2]--;
+                ans++;
+            }
+            // 三带一
+            while (count[3] > 0 && count[1] > 0)
+            {
+                count[3]--;
+                count[1]--;
+                ans++;
+            }
+            // 三带一+三带一对
+            while (count[3] > 2)
+            {
+                count[3] -= 3;
+                ans += 2;
+            }
+            // 四带两对
+            while (count[4] > 1)
+            {
+                count[4] -= 2;
+                ans++;
+            }
+
+            if (canRocket && count[1] > 1) {
+                return ans + count[1] + count[2] + count[3] + count[4] - 1;
+            } else
+            {
+                return ans + count[1] + count[2] + count[3] + count[4];
+             }
+        }
+        private void feiji(int step)
+        {
+            for (int l = 1; l <= 12; l++)
+            {
+                int len = 0;
+                while (l + len <= 12 && map.ContainsKey(l + len) && map[l + len] >= 3) len++;
+                for (int i = len; i >= 2; i--)
+                {
+                    int r = l + i - 1;
+                    for (int k = l; k <= r; k++) map[k] -= 3;
+                    chupai(step + 1);
+                    for (int k = l; k <= r; k++) map[k] += 3;
+                }
+            }
+        }
+        private void liandui(int step)
+        {
+            for (int l = 1; l <= 12; l++)
+            {
+                int len = 0;
+                while (l + len <= 12 && map.ContainsKey(l + len) && map[l + len] >= 2) len++;
+                for (int i = len; i >= 3; i--)
+                {
+                    int r = l + i - 1;
+                    for (int k = l; k <= r; k++) map[k] -= 2;
+                    chupai(step + 1);
+                    for (int k = l; k <= r; k++) map[k] += 2;
+                }
+            }
+        }
+        private void shunzi(int step)
+        {
+            for (int l = 1; l <= 12; l++)
+            {
+                int len = 0;
+                while (l + len <= 12 && map.ContainsKey(l + len) && map[l + len] >= 1) len++;
+                for (int i = len; i >= 5; i--)
+                {
+                    int r = l + i - 1;
+                    for (int k = l; k <= r; k++) map[k] -= 1;
+                    chupai(step + 1);
+                    for (int k = l; k <= r; k++) map[k] += 1;
+                }
+            }
+        }
+        private void chupai(int step)
+        {
+            if (step >= __ans) return;
+            int san = san1();
+            __ans=Math.Min(__ans, step+san);
+            feiji(step);
+            liandui(step);
+            shunzi(step);
+        }
+        public int MinCase1()
+        {
+            __ans = 0x3f3f3f3f;
+            chupai(0);
+            return __ans;
         }
     }
 
