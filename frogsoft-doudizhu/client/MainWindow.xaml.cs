@@ -26,20 +26,22 @@ namespace frogsoft_doudizhu
             InitializeComponent();
 
             LeftCardPanel_Upgrade();
+            LeftPutCardPanel_Upgrade();
+            RightPutCardPanel_Upgrade();
             ButtonPanel_Upgrade(BUTTON_ON_PLAY);
         }
 
         private const int BUTTON_ON_PLAY = 0;   // 打牌时的按钮
         private const int BUTTON_ON_CALL = 1;   // 叫分时的按钮
 
-        private const int CARD_DESELECT_MARGIN = -60;   // 不被选中的牌
-        private const int CARD_SELECT_MARGIN = 0;       // 被选中的牌
+        private const int CARD_DESELECT_MARGIN = -80;   // 不被选中的牌
+        private const int CARD_SELECT_MARGIN = -20;       // 被选中的牌
 
         // private List<int> ready = new List<int> { 9, 13, 17, 21, 25, 29 };
         private List<int> leftCardList = new List<int> { 9, 13, 17, 21, 25, 29 }; // 自己手上的牌
 
-        private List<int> leftPutCardList = new List<int> { 1 };    // 上家出的牌
-        private List<int> rightPutCardList = new List<int> { };     // 下家出的牌
+        private List<int> leftPutCardList = new List<int> { 9, 13, 17, 21, 25, 29 };    // 上家出的牌
+        private List<int> rightPutCardList = new List<int> { 9, 13, 17, 21, 25, 29 };     // 下家出的牌
 
         private List<int> selectCardList = new List<int> { };       // 已选中的牌
         private List<int> putCardList = new List<int> { };          // 打出去的牌
@@ -91,10 +93,10 @@ namespace frogsoft_doudizhu
                         (cardPanel.Children[0] as Image).Margin = new Thickness { Left = (window.Width - (cardList.Count - 1) * 24 - 70) / 2 };
                         break;
                     case 2:
-                        (cardPanel.Children[0] as Image).Margin = new Thickness { Left = 200 };
+                        (cardPanel.Children[0] as Image).Margin = new Thickness { Left = 240 };
                         break;
                     case 3:
-                        (cardPanel.Children[0] as Image).Margin = new Thickness { Left = 550 - (cardList.Count - 1) * 24 - 70 };
+                        (cardPanel.Children[0] as Image).Margin = new Thickness { Left = 590 - (cardList.Count - 1) * 24 - 70 };
                         break;
                 }
             }
@@ -160,7 +162,7 @@ namespace frogsoft_doudizhu
                     reselectButton.Width = 120;
                     reselectButton.Height = 50;
                     reselectButton.Click += ReselectButton_Click;
-                    reselectButton.Margin = new Thickness { Left = 420 - 100, Top = 25 };
+                    reselectButton.Margin = new Thickness { Left = 460 - 100, Top = 35 };
                     buttonPanel.Children.Add(reselectButton);
 
                     Button skipCardButton = new Button();
@@ -168,7 +170,7 @@ namespace frogsoft_doudizhu
                     skipCardButton.Width = 120;
                     skipCardButton.Height = 50;
                     skipCardButton.Click += SkipCardButton_Click;
-                    skipCardButton.Margin = new Thickness { Left = 100, Top = 25 };
+                    skipCardButton.Margin = new Thickness { Left = 100, Top = 35 };
                     buttonPanel.Children.Add(skipCardButton);
 
                     Button putCardButton = new Button();
@@ -176,7 +178,7 @@ namespace frogsoft_doudizhu
                     putCardButton.Width = 120;
                     putCardButton.Height = 50;
                     putCardButton.Click += PutCardButton_Click;
-                    putCardButton.Margin = new Thickness { Left = 100, Top = 25 };
+                    putCardButton.Margin = new Thickness { Left = 100, Top = 35 };
                     buttonPanel.Children.Add(putCardButton);
                     break;
             }
@@ -207,6 +209,7 @@ namespace frogsoft_doudizhu
                 LeftCardPanel_Upgrade();
                 test++;
             }*/
+            buttonPanel.Visibility = Visibility.Collapsed;
         }
 
         private void PutCardButton_Click(object sender, RoutedEventArgs e) // 出牌

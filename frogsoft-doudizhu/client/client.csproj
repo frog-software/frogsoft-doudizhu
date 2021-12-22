@@ -71,6 +71,7 @@
     <None Remove="images\cards\8.png" />
     <None Remove="images\cards\9.png" />
     <None Remove="images\cards\back.png" />
+    <None Remove="images\others\background.jpg" />
   </ItemGroup>
 
   <ItemGroup>
@@ -129,6 +130,7 @@
     <Resource Include="images\cards\8.png" />
     <Resource Include="images\cards\9.png" />
     <Resource Include="images\cards\back.png" />
+    <Resource Include="images\others\background.jpg" />
   </ItemGroup>
 
 </Project>
