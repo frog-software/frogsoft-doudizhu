@@ -72,6 +72,7 @@
     <None Remove="images\cards\8.png" />
     <None Remove="images\cards\9.png" />
     <None Remove="images\others\background.jpg" />
+    <None Remove="images\others\logo.png" />
     <None Remove="images\others\title1.png" />
     <None Remove="images\others\title2.png" />
     <None Remove="images\others\title3.png" />
@@ -134,6 +135,7 @@
     <Resource Include="images\cards\8.png" />
     <Resource Include="images\cards\9.png" />
     <Resource Include="images\others\background.jpg" />
+    <Resource Include="images\others\logo.png" />
     <Resource Include="images\others\title1.png" />
     <Resource Include="images\others\title2.png" />
     <Resource Include="images\others\title3.png" />
