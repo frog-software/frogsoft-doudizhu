@@ -19,6 +19,8 @@
 
         public List<int> list = new List<int>();
 
+        public bool HasGameStarted {  get; set; } = false;
+
 
         public bool AddPlayer(string playerId)
         {
@@ -178,7 +180,7 @@
             for (int i = 51; i < 54; i++)
             {
                 var player = GetPlayerByStatus(PlayerStatus.LANDLORD);
-                player.CardsInHand.Add(i);
+                player.CardsInHand.Add(list[i]);
             }
         }
 
