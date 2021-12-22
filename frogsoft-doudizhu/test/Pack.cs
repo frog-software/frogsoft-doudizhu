@@ -199,7 +199,7 @@ namespace test
                 else
                 {
                     // 飞机带单
-                    if (Single.Count == Triple.Count && Triple.Count * 4 == Cards.Count)
+                    if (Triple.Count * 4 == Cards.Count)
                     {
                         Category = Category.PLANE_WITH_SOLO;
                         MaxValue = Triple[0];
