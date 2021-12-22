@@ -86,7 +86,10 @@ namespace backend.GameService.com.frogsoft.doudizhu.Game
                 }
             }
 
-            if (existingGame.LastPlayer == existingGame.CurrentPlayer)
+            if (existingGame.LastPlayer == existingGame.CurrentPlayer &&
+                existingGame.LastPlayer != null &&
+                existingGame.CurrentPlayer != null &&
+                existingGame.Players.Count >= 3)
             {
                 existingGame.Players[0].CardsOut = new List<int>();
                 existingGame.Players[1].CardsOut = new List<int>();
