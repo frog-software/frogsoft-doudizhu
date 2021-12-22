@@ -1,5 +1,6 @@
 ﻿<!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="utf-8" />
     <title></title>
@@ -23,8 +24,9 @@
         }
     </style>
 </head>
+
 <body>
-    <h1>WebSocket Sample Application</h1>
+    <h1>Doudizhu Backend WebSocket Tester</h1>
     <p id="stateLabel">Ready to connect...</p>
     <div>
         <label for="connectionUrl">WebSocket Server URL:</label>
@@ -147,35 +149,240 @@
 
         testButton.onclick = function () {
             const msgs = [
-                {
+                { // 0, room 0, player 0 join
                     CurrentPlayer: "0",
                     RoomNo: "0",
                     MessageType: 0,
                 },
-                {
+                { // 1, room 0, player 1 join
                     CurrentPlayer: "1",
                     RoomNo: "0",
                     MessageType: 0,
                 },
-                {
+                { // 2, room 0, player 2 join
                     CurrentPlayer: "2",
                     RoomNo: "0",
                     MessageType: 0,
                 },
-                {
+                { // 3, room 0, player 0 ready
                     CurrentPlayer: "0",
                     RoomNo: "0",
                     MessageType: 2,
-                    Players: {
-                        Status: 1
-                    }
+                    Players: [
+                        {
+                            Status: 1,
+                            Id: "0"
+                        }
+                    ]
+                },
+                { // 4, room 0, player 1 ready
+                    CurrentPlayer: "1",
+                    RoomNo: "0",
+                    MessageType: 2,
+                    Players: [
+                        {
+                            Status: 1,
+                            Id: "0"
+                        },
+                        {
+                            Status: 1,
+                            Id: "1"
+                        }
+                    ]
+                },
+                { // 5, room 0, player 2 ready
+                    CurrentPlayer: "2",
+                    RoomNo: "0",
+                    MessageType: 2,
+                    Players: [
+                        {
+                            Status: 1,
+                            Id: "0"
+                        },
+                        {
+                            Status: 1,
+                            Id: "1"
+                        },
+                        {
+                            Status: 1,
+                            Id: "2"
+                        }
+                    ]
+                },
+                { // 6, room 0, player 0 call 1
+                    CurrentPlayer: "0",
+                    RoomNo: "0",
+                    MessageType: 2,
+                    Players: [
+                        {
+                            Status: 1,
+                            Id: "0",
+                            CallScore: 1
+                        },
+                        {
+                            Status: 1,
+                            Id: "1"
+                        },
+                        {
+                            Status: 1,
+                            Id: "2"
+                        }
+                    ]
+                },
+                { // 7, room 0, player 1 call 2
+                    CurrentPlayer: "1",
+                    RoomNo: "0",
+                    MessageType: 2,
+                    Players: [
+                        {
+                            Status: 1,
+                            Id: "0",
+                        },
+                        {
+                            Status: 1,
+                            Id: "1",
+                            CallScore: 2
+                        },
+                        {
+                            Status: 1,
+                            Id: "2"
+                        }
+                    ]
+                },
+                { // 8, room 0, player 2 call 3
+                    CurrentPlayer: "2",
+                    RoomNo: "0",
+                    MessageType: 2,
+                    Players: [
+                        {
+                            Status: 1,
+                            Id: "0",
+                            CallScore: 1
+                        },
+                        {
+                            Status: 1,
+                            Id: "1"
+                        },
+                        {
+                            Status: 1,
+                            Id: "2",
+                            CallScore: 3
+                        }
+                    ]
                 },
             ]
 
             const reses = [
-                '{"LastCombination":[],"MessageType":0,"Players":[{"CardsInHand":[],"CardsOut":[],"CallScore":-1,"Id":"0","Status":0}],"CurrentPlayer":null,"CurrentPlayerConnectionId":null,"Message":"","RoomNo":"0"}',
-                '{"LastCombination":[],"MessageType":0,"Players":[{"CardsInHand":[],"CardsOut":[],"CallScore":-1,"Id":"0","Status":0},{"CardsInHand":[],"CardsOut":[],"CallScore":-1,"Id":"1","Status":0}],"CurrentPlayer":null,"CurrentPlayerConnectionId":null,"Message":"","RoomNo":"0"}',
-                '{"LastCombination":[],"MessageType":0,"Players":[{"CardsInHand":[],"CardsOut":[],"CallScore":-1,"Id":"0","Status":0},{"CardsInHand":[],"CardsOut":[],"CallScore":-1,"Id":"1","Status":0},{"CardsInHand":[],"CardsOut":[],"CallScore":-1,"Id":"2","Status":0}],"CurrentPlayer":null,"CurrentPlayerConnectionId":null,"Message":"","RoomNo":"0"}'
+                (res) => { // 0, room 0, player 0 join
+                    console.log(res)
+                    return res === '{"LastCombination":[],"list":[],"MessageType":0,"Players":[{"CardsInHand":[],"CardsOut":[],"CallScore":-1,"Id":"0","Status":0}],"CurrentPlayer":null,"CurrentPlayerConnectionId":null,"Message":"","RoomNo":"0"}'
+                },
+                (res) => { // 1, room 0, player 1 join
+                    return res === '{"LastCombination":[],"list":[],"MessageType":0,"Players":[{"CardsInHand":[],"CardsOut":[],"CallScore":-1,"Id":"0","Status":0},{"CardsInHand":[],"CardsOut":[],"CallScore":-1,"Id":"1","Status":0}],"CurrentPlayer":null,"CurrentPlayerConnectionId":null,"Message":"","RoomNo":"0"}'
+                },
+                (res) => { // 2, room 0, player 2 join
+                    return res === '{"LastCombination":[],"list":[],"MessageType":0,"Players":[{"CardsInHand":[],"CardsOut":[],"CallScore":-1,"Id":"0","Status":0},{"CardsInHand":[],"CardsOut":[],"CallScore":-1,"Id":"1","Status":0},{"CardsInHand":[],"CardsOut":[],"CallScore":-1,"Id":"2","Status":0}],"CurrentPlayer":null,"CurrentPlayerConnectionId":null,"Message":"","RoomNo":"0"}'
+                },
+                (res) => { // 3, room 0, player 0 ready
+                    return res === '{"LastCombination":[],"list":[],"MessageType":0,"Players":[{"CardsInHand":[],"CardsOut":[],"CallScore":-1,"Id":"0","Status":1},{"CardsInHand":[],"CardsOut":[],"CallScore":-1,"Id":"1","Status":0},{"CardsInHand":[],"CardsOut":[],"CallScore":-1,"Id":"2","Status":0}],"CurrentPlayer":null,"CurrentPlayerConnectionId":null,"Message":"","RoomNo":"0"}'
+                },
+                (res) => { // 4, room 0, player 1 ready
+                    return res === '{"LastCombination":[],"list":[],"MessageType":0,"Players":[{"CardsInHand":[],"CardsOut":[],"CallScore":-1,"Id":"0","Status":1},{"CardsInHand":[],"CardsOut":[],"CallScore":-1,"Id":"1","Status":1},{"CardsInHand":[],"CardsOut":[],"CallScore":-1,"Id":"2","Status":0}],"CurrentPlayer":null,"CurrentPlayerConnectionId":null,"Message":"","RoomNo":"0"}'
+                },
+                (res) => { // 5, room 0, player 2 ready
+                    const resObj = JSON.parse(res);
+                    console.log(resObj)
+                    const nextMsg = msgs[6]
+                    for (let i = 0; i < 3; i++) {
+                        nextMsg.Players[i] = {
+                            ...resObj.Players[i],
+                            ...nextMsg.Players[i],
+                        }
+                    }
+
+                    return resObj.Players[0].CardsInHand.length === 17 &&
+                        resObj.Players[1].CardsInHand.length === 17 &&
+                        resObj.Players[2].CardsInHand.length === 17 &&
+                        resObj.Players[0].CallScore === -1 &&
+                        resObj.Players[1].CallScore === -1 &&
+                        resObj.Players[2].CallScore === -1 &&
+                        resObj.Players[0].Id === "0" &&
+                        resObj.Players[1].Id === "1" &&
+                        resObj.Players[2].Id === "2" &&
+                        resObj.Players[0].Status === 1 &&
+                        resObj.Players[1].Status === 1 &&
+                        resObj.Players[2].Status === 1 &&
+                        resObj.CurrentPlayer === "0"
+                },
+                (res) => { // 6, room 0, player 0 call 1
+                    const resObj = JSON.parse(res);
+                    console.log(resObj)
+
+                    const nextMsg = msgs[7]
+                    for (let i = 0; i < 3; i++) {
+                        nextMsg.Players[i] = {
+                            ...resObj.Players[i],
+                            ...nextMsg.Players[i],
+                        }
+                    }
+                    return resObj.Players[0].CardsInHand.length === 17 &&
+                        resObj.Players[1].CardsInHand.length === 17 &&
+                        resObj.Players[2].CardsInHand.length === 17 &&
+                        resObj.Players[0].CallScore === 1 &&
+                        resObj.Players[1].CallScore === -1 &&
+                        resObj.Players[2].CallScore === -1 &&
+                        resObj.Players[0].Id === "0" &&
+                        resObj.Players[1].Id === "1" &&
+                        resObj.Players[2].Id === "2" &&
+                        resObj.Players[0].Status === 1 &&
+                        resObj.Players[1].Status === 1 &&
+                        resObj.Players[2].Status === 1 &&
+                        resObj.CurrentPlayer === "1"
+                },
+                (res) => { // 7, room 0, player 1 call 2
+                    const resObj = JSON.parse(res);
+                    console.log(resObj)
+
+                    const nextMsg = msgs[8]
+                    for (let i = 0; i < 3; i++) {
+                        nextMsg.Players[i] = {
+                            ...resObj.Players[i],
+                            ...nextMsg.Players[i],
+                        }
+                    }
+                    return resObj.Players[0].CardsInHand.length === 17 &&
+                        resObj.Players[1].CardsInHand.length === 17 &&
+                        resObj.Players[2].CardsInHand.length === 17 &&
+                        resObj.Players[0].CallScore === 1 &&
+                        resObj.Players[1].CallScore === 2 &&
+                        resObj.Players[2].CallScore === -1 &&
+                        resObj.Players[0].Id === "0" &&
+                        resObj.Players[1].Id === "1" &&
+                        resObj.Players[2].Id === "2" &&
+                        resObj.Players[0].Status === 1 &&
+                        resObj.Players[1].Status === 1 &&
+                        resObj.Players[2].Status === 1 &&
+                        resObj.CurrentPlayer === "2"
+                },
+                (res) => { // 8, room 0, player 2 call 3
+                    const resObj = JSON.parse(res);
+                    console.log(resObj)
+                    return resObj.Players[0].CardsInHand.length === 17 &&
+                        resObj.Players[1].CardsInHand.length === 17 &&
+                        resObj.Players[2].CardsInHand.length === 20 &&
+                        resObj.Players[0].CallScore === 1 &&
+                        resObj.Players[1].CallScore === 2 &&
+                        resObj.Players[2].CallScore === 3 &&
+                        resObj.Players[0].Id === "0" &&
+                        resObj.Players[1].Id === "1" &&
+                        resObj.Players[2].Id === "2" &&
+                        resObj.Players[0].Status === 3 &&
+                        resObj.Players[1].Status === 3 &&
+                        resObj.Players[2].Status === 2 &&
+                        resObj.CurrentPlayer === "0"
+                },
+
+
             ]
 
             const delayTime = 500
@@ -183,17 +390,19 @@
                 await delay((idx) * delayTime)
                 sendData(JSON.stringify(msg))
                 await delay(delayTime / 2)
-                if (lastMessage === reses[idx]) {
+
+                if (reses[idx](lastMessage)) {
                     commsLog.innerHTML += '<tr>' +
                         '<td></td>' +
                         '<td></td>' +
-                        '<td class="commslog-data" style="background: green; color: white">Test Case ' + (idx + 1) + ' Passed</td></tr>';
+                        '<td class="commslog-data" style="background: green; color: white">Test Case ' + (idx + 1) + ' Passed</td></tr><br>';
                 } else {
                     commsLog.innerHTML += '<tr>' +
                         '<td></td>' +
                         '<td></td>' +
-                        '<td class="commslog-data" style="background: red; color: white">Test Case ' + (idx + 1) + ' Failed</td></tr>';
+                        '<td class="commslog-data" style="background: red; color: white">Test Case ' + (idx + 1) + ' Failed</td></tr><br>';
                 }
+                window.scrollTo(0, document.body.scrollHeight);
             })
         }
 
@@ -219,6 +428,7 @@
                     '<td class="commslog-server">Server</td>' +
                     '<td class="commslog-client">Client</td>' +
                     '<td class="commslog-data">' + htmlEscape(lastMessage) + '</td></tr>';
+                window.scrollTo(0, document.body.scrollHeight);
             };
         };
 
@@ -232,4 +442,5 @@
         }
     </script>
 </body>
+
 </html>

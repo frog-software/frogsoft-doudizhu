@@ -41,10 +41,14 @@ namespace backend.GameService.com.frogsoft.doudizhu.Game
                 return false;
             }
 
-            var playerInRemoteGame = remoteGame.GetPlayerById(remoteGame.CurrentPlayer);
-            var playerInExistingGame = existingGame.GetNextPlayerById(remoteGame.CurrentPlayer);
 
-            existingGame.CurrentPlayer = playerInExistingGame.Id;
+            // existingGame.CurrentPlayer = remoteGame.CurrentPlayer;
+
+            var playerInRemoteGame = remoteGame.GetPlayerById(remoteGame.CurrentPlayer);
+            var playerId = existingGame.CurrentPlayer == null ? remoteGame.CurrentPlayer : existingGame.CurrentPlayer;
+            var playerInExistingGame = existingGame.GetPlayerById(playerId);
+
+            // existingGame.CurrentPlayer = playerInExistingGame.Id;
 
             playerInExistingGame.CopyFrom(playerInRemoteGame);
 
@@ -52,8 +56,23 @@ namespace backend.GameService.com.frogsoft.doudizhu.Game
 
             existingGame.DetermineLandlord();
 
-            // move to next player
-            existingGame.CurrentPlayer = existingGame.GetNextPlayerById(existingGame.CurrentPlayer).Id;
+            if (existingGame.IsPlayersAllReady())
+            {
+                // move to next player
+                existingGame.CurrentPlayer = existingGame.GetNextPlayerById(existingGame.CurrentPlayer).Id;
+
+                if (existingGame.IsPlayerAllNoCards())
+                {
+                    existingGame.AssignCards();
+                }
+
+                if(existingGame.IsPlayersAllCalled())
+                {
+                    existingGame.AssignLandlordCards();
+                }
+            }
+
+            
 
 
             return true;
