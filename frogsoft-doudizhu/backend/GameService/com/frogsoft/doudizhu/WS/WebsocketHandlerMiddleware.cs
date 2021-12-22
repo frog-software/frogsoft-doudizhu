@@ -97,10 +97,10 @@ namespace backend.GameService.com.frogsoft.doudizhu.WS
                     {
                         
                         client.RoomNo = message.RoomNo;
-                        _logger.LogInformation("client object [join] " + JsonConvert.SerializeObject(client));
+                        _logger.LogInformation("[JOIN] Websocket client sent " + JsonConvert.SerializeObject(message));
                         if (!GameCollection.AddOrJoinGame(message.RoomNo, message.CurrentPlayer))
                         {
-                            client.SendMessageAsync("room full");
+                            client.SendMessageAsync("{\"msg\": \"room full\"}");
                         }
 
                         var clients = WebsocketClientCollection.GetRoomClients(message.RoomNo);
@@ -121,11 +121,9 @@ namespace backend.GameService.com.frogsoft.doudizhu.WS
                             break;
                         }
 
-                        _logger.LogInformation("client object [update] " + JsonConvert.SerializeObject(client));
+                        _logger.LogInformation("[UPDATE] Websocket client sent " + JsonConvert.SerializeObject(message));
 
                         GameCollection.UpdateGame(message);
-
-                        _logger.LogInformation($"Websocket client {message.CurrentPlayer} join room {client.RoomNo}.");
 
                         var clients = WebsocketClientCollection.GetRoomClients(client.RoomNo);
                         clients.ForEach(c =>
