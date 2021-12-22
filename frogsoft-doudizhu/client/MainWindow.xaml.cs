@@ -28,6 +28,7 @@ namespace frogsoft_doudizhu
             LeftCardPanel_Upgrade();
             LeftPutCardPanel_Upgrade();
             RightPutCardPanel_Upgrade();
+            LordCardPanel_Upgrade();
             ButtonPanel_Upgrade(BUTTON_ON_PLAY);
         }
 
@@ -35,18 +36,25 @@ namespace frogsoft_doudizhu
         private const int BUTTON_ON_CALL = 1;   // 叫分时的按钮
 
         private const int CARD_DESELECT_MARGIN = -80;   // 不被选中的牌
-        private const int CARD_SELECT_MARGIN = -20;       // 被选中的牌
+        private const int CARD_SELECT_MARGIN = -20;     // 被选中的牌
+
+        private List<int> lordCardList = new List<int> { 54, 54, 54 };  // 地主牌
 
         // private List<int> ready = new List<int> { 9, 13, 17, 21, 25, 29 };
-        private List<int> leftCardList = new List<int> { 9, 13, 17, 21, 25, 29 }; // 自己手上的牌
+        private List<int> leftCardList = new List<int> { 54, 54, 54, 54, 54, 54, 54, 54, 54, 54, }; // 自己手上的牌
 
-        private List<int> leftPutCardList = new List<int> {  };    // 上家出的牌
-        private List<int> rightPutCardList = new List<int> {  };     // 下家出的牌
+        private List<int> leftPutCardList = new List<int> { 9, 13, 17, 21, 25, 29 };    // 上家出的牌
+        private List<int> rightPutCardList = new List<int> { 9, 13, 17, 21, 25, 29 };     // 下家出的牌
 
         private List<int> selectCardList = new List<int> { };       // 已选中的牌
         private List<int> putCardList = new List<int> { };          // 打出去的牌
 
         // private int test = 0;
+
+        private void LordCardPanel_Upgrade() // 更新地主牌动画
+        {
+            OutCardPanel_Upgrade(lordCardPanel, lordCardList, 0);
+        }
 
         private void PutCardPanel_Upgrade() // 更新自己的出牌堆动画
         {
@@ -80,7 +88,7 @@ namespace frogsoft_doudizhu
                 image.Name = "card" + card.ToString();
                 image.Width = 70;
                 image.Height = 105;
-                image.Margin = new Thickness { Left = -46, Bottom = 0 };
+                image.Margin = new Thickness { Left = sideCase > 0 ? -46 : 2, Bottom = 0 };
 
                 cardPanel.Children.Add(image);
             }
@@ -89,6 +97,9 @@ namespace frogsoft_doudizhu
             {
                 switch (sideCase)
                 {
+                    case 0:
+                        (cardPanel.Children[0] as Image).Margin = new Thickness { Left = (window.Width - cardList.Count * 70) / 2 };
+                        break;
                     case 1:
                         (cardPanel.Children[0] as Image).Margin = new Thickness { Left = (window.Width - (cardList.Count - 1) * 24 - 70) / 2 };
                         break;

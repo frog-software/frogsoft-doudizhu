@@ -66,11 +66,11 @@
     <None Remove="images\cards\51.png" />
     <None Remove="images\cards\52.png" />
     <None Remove="images\cards\53.png" />
+    <None Remove="images\cards\54.png" />
     <None Remove="images\cards\6.png" />
     <None Remove="images\cards\7.png" />
     <None Remove="images\cards\8.png" />
     <None Remove="images\cards\9.png" />
-    <None Remove="images\cards\back.png" />
     <None Remove="images\others\background.jpg" />
   </ItemGroup>
 
@@ -125,11 +125,11 @@
     <Resource Include="images\cards\51.png" />
     <Resource Include="images\cards\52.png" />
     <Resource Include="images\cards\53.png" />
+    <Resource Include="images\cards\54.png" />
     <Resource Include="images\cards\6.png" />
     <Resource Include="images\cards\7.png" />
     <Resource Include="images\cards\8.png" />
     <Resource Include="images\cards\9.png" />
-    <Resource Include="images\cards\back.png" />
     <Resource Include="images\others\background.jpg" />
   </ItemGroup>
 
