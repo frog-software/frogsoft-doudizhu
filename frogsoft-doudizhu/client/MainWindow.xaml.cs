@@ -28,10 +28,6 @@ namespace frogsoft_doudizhu
             InitializeComponent();
 
             WebSocketInitialize();
-
-            /*OwnCardPanel_Upgrade();
-            LordCardPanel_Upgrade();
-            ButtonPanel_Upgrade(BUTTON_ON_CALL);*/
         }
 
         private const int NO_BUTTON = 0;        // 不显示按钮
@@ -74,13 +70,6 @@ namespace frogsoft_doudizhu
         private void RightPutCardPanel_Upgrade() // 更新下家的出牌堆动画
         {
             OutCardPanel_Upgrade(rightPutCardPanel, rightPutCardList, 3);
-        }
-
-        private void AllCardPanel_Clear() // 清除牌桌上的牌
-        {
-            ownPutCardPanel.Children.Clear();
-            rightPutCardPanel.Children.Clear();
-            leftPutCardPanel.Children.Clear();
         }
 
         private void OutCardPanel_Upgrade(StackPanel cardPanel, List<int> cardList, int sideCase) // 更新牌堆中的动画
@@ -199,12 +188,8 @@ namespace frogsoft_doudizhu
                 image.Margin = new Thickness { Left = image.Margin.Left, Bottom = CARD_DESELECT_MARGIN };
             }
 
-            /*if (test < ready.Count)
-            {
-                leftCardList.Add(ready[test]);
-                LeftCardPanel_Upgrade();
-                test++;
-            }*/
+            currentGame.GetPlayerById(currentPlayer.Id).CardsOut = selectCardList;
+            ws.Send(JsonConvert.SerializeObject(currentGame));
         }
 
         private void PutCardButton_Click(object sender, RoutedEventArgs e) // 出牌
@@ -237,9 +222,9 @@ namespace frogsoft_doudizhu
                         }
                     }
 
+                    currentGame.GetPlayerById(currentPlayer.Id).CardsOut = selectCardList;
+                    ws.Send(JsonConvert.SerializeObject(currentGame));
                     selectCardList.Clear();
-                    OwnPutCardPanel_Upgrade();
-                    OwnCardPanel_Upgrade();
                 }
                 else // 不允许出牌
                 {
@@ -331,7 +316,7 @@ namespace frogsoft_doudizhu
                 Random random = new Random();
                 currentPlayer.Id = "user" + random.Next(1000).ToString();
                 currentGame.CurrentPlayer = currentPlayer.Id;
-                currentGame.RoomNo = "7";
+                currentGame.RoomNo = "8";
                 currentGame.MessageType = MessageType.JOIN;
 
                 ws.Send(JsonConvert.SerializeObject(currentGame));
@@ -372,9 +357,11 @@ namespace frogsoft_doudizhu
                     if (myself.Status == PlayerStatus.LANDLORD || myself.Status == PlayerStatus.PEASANT)
                     {
                         lordCardList = currentGame.list.GetRange(51, 3);
-                        Call_Clear();
+                        gameGrid.Dispatcher.Invoke(() =>
+                        {
+                            Call_Clear();
+                        });
                     }
-                        
                     else
                     {
                         lordCardList.Clear();
