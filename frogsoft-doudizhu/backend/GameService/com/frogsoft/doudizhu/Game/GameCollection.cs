@@ -58,6 +58,11 @@ namespace backend.GameService.com.frogsoft.doudizhu.Game
             if (playerInRemoteGame.CardsOut.Count > 0)
             {
                 existingGame.LastCombination = playerInRemoteGame.CardsOut;
+
+                foreach(int card in playerInExistingGame.CardsOut)
+                {
+                    playerInExistingGame.CardsInHand.Remove(card);
+                }
             }
            
 
