@@ -7,14 +7,136 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="720" Width="1280" MinWidth="1280" MinHeight="720" MaxWidth="1280" MaxHeight="720" WindowChrome.WindowChrome="{DynamicResource WindowChromeKey}" AllowsTransparency="True" WindowStyle="None" ResizeMode="NoResize" WindowState="Maximized">
     <Grid>
+        <StackPanel x:Name="lordCardPanel" Margin="0,0,0,510" Orientation="Horizontal" />
+        
         <StackPanel x:Name="leftCardPanel" Margin="0,405,0,0" Orientation="Horizontal" />
 
         <StackPanel x:Name="putCardPanel" Margin="0,250,0,280" Orientation="Horizontal" />
         <StackPanel x:Name="leftPutCardPanel" Margin="0,100,450,400" Orientation="Horizontal"/>
         <StackPanel x:Name="rightPutCardPanel" Margin="450,100,0,400" Orientation="Horizontal"/>
 
-        <StackPanel x:Name="buttonPanel" Margin="0,350,0,200" Orientation="Horizontal"/>
+        <StackPanel x:Name="buttonPanelOnPlay" Margin="0,350,0,200" Orientation="Horizontal" Visibility="Collapsed">
+            <Button Content="重选" Width="120" Height="50" Margin="360, 35, 0, 0" Background="#FFEBC597" BorderThickness="4,4,4,4" Foreground="#FF732E10" FontFamily="FZKai-Z03" FontSize="28" FontWeight="DemiBold" FontStyle="Normal" FontStretch="Normal" Click="ReselectButton_Click" >
+                <Button.BorderBrush>
+                    <RadialGradientBrush RadiusX="0.53" RadiusY="0.5" SpreadMethod="Pad">
+                        <GradientStop Color="#FFE59100" Offset="0.8"/>
+                        <GradientStop Color="#FF581B00" Offset="1"/>
+                    </RadialGradientBrush>
+                </Button.BorderBrush>
+                <Button.Template >
+                    <ControlTemplate TargetType="{x:Type Button}" >
+                        <Border BorderBrush="{TemplateBinding Control.BorderBrush}" BorderThickness="4" CornerRadius="7,7,7,7">
+                            <Border.Background>#ebc597</Border.Background>
+                            <ContentPresenter Content="{TemplateBinding ContentControl.Content}" HorizontalAlignment="Center" VerticalAlignment="Center" ></ContentPresenter>
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
 
+            <Button Content="不出" Width="120" Height="50" Margin="100, 35, 0, 0" Background="#FFEBC597" BorderThickness="4,4,4,4" Foreground="#FF732E10" FontFamily="FZKai-Z03" FontSize="28" FontWeight="DemiBold" FontStyle="Normal" FontStretch="Normal" Click="SkipCardButton_Click" >
+                <Button.BorderBrush>
+                    <RadialGradientBrush RadiusX="0.53" RadiusY="0.5" SpreadMethod="Pad">
+                        <GradientStop Color="#FFE59100" Offset="0.8"/>
+                        <GradientStop Color="#FF581B00" Offset="1"/>
+                    </RadialGradientBrush>
+                </Button.BorderBrush>
+                <Button.Template >
+                    <ControlTemplate TargetType="{x:Type Button}" >
+                        <Border BorderBrush="{TemplateBinding Control.BorderBrush}" BorderThickness="4" CornerRadius="7,7,7,7">
+                            <Border.Background>#ebc597</Border.Background>
+                            <ContentPresenter Content="{TemplateBinding ContentControl.Content}" HorizontalAlignment="Center" VerticalAlignment="Center" ></ContentPresenter>
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+
+            <Button Content="出牌" Width="120" Height="50" Margin="100, 35, 0, 0" Background="#FFEBC597" BorderThickness="4,4,4,4" Foreground="#FF732E10" FontFamily="FZKai-Z03" FontSize="28" FontWeight="DemiBold" FontStyle="Normal" FontStretch="Normal" Click="PutCardButton_Click" >
+                <Button.BorderBrush>
+                    <RadialGradientBrush RadiusX="0.53" RadiusY="0.5" SpreadMethod="Pad">
+                        <GradientStop Color="#FFE59100" Offset="0.8"/>
+                        <GradientStop Color="#FF581B00" Offset="1"/>
+                    </RadialGradientBrush>
+                </Button.BorderBrush>
+                <Button.Template >
+                    <ControlTemplate TargetType="{x:Type Button}" >
+                        <Border BorderBrush="{TemplateBinding Control.BorderBrush}" BorderThickness="4" CornerRadius="7,7,7,7">
+                            <Border.Background>#ebc597</Border.Background>
+                            <ContentPresenter Content="{TemplateBinding ContentControl.Content}" HorizontalAlignment="Center" VerticalAlignment="Center" ></ContentPresenter>
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+        </StackPanel>
+        
+        <StackPanel x:Name="buttonPanelOnCall" Margin="0,350,0,200" Orientation="Horizontal">
+            <Button Content="不叫" Width="120" Height="50" Margin="280, 35, 0, 0" Background="#FFEBC597" BorderThickness="4,4,4,4" Foreground="#FF732E10" FontFamily="FZKai-Z03" FontSize="28" FontWeight="DemiBold" FontStyle="Normal" FontStretch="Normal" >
+                <Button.BorderBrush>
+                    <RadialGradientBrush RadiusX="0.53" RadiusY="0.5" SpreadMethod="Pad">
+                        <GradientStop Color="#FFE59100" Offset="0.8"/>
+                        <GradientStop Color="#FF581B00" Offset="1"/>
+                    </RadialGradientBrush>
+                </Button.BorderBrush>
+                <Button.Template >
+                    <ControlTemplate TargetType="{x:Type Button}" >
+                        <Border BorderBrush="{TemplateBinding Control.BorderBrush}" BorderThickness="4" CornerRadius="7,7,7,7">
+                            <Border.Background>#ebc597</Border.Background>
+                            <ContentPresenter Content="{TemplateBinding ContentControl.Content}" HorizontalAlignment="Center" VerticalAlignment="Center" ></ContentPresenter>
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+
+            <Button Content="一分" Width="120" Height="50" Margin="80, 35, 0, 0" Background="#FFEBC597" BorderThickness="4,4,4,4" Foreground="#FF732E10" FontFamily="FZKai-Z03" FontSize="28" FontWeight="DemiBold" FontStyle="Normal" FontStretch="Normal" >
+                <Button.BorderBrush>
+                    <RadialGradientBrush RadiusX="0.53" RadiusY="0.5" SpreadMethod="Pad">
+                        <GradientStop Color="#FFE59100" Offset="0.8"/>
+                        <GradientStop Color="#FF581B00" Offset="1"/>
+                    </RadialGradientBrush>
+                </Button.BorderBrush>
+                <Button.Template >
+                    <ControlTemplate TargetType="{x:Type Button}" >
+                        <Border BorderBrush="{TemplateBinding Control.BorderBrush}" BorderThickness="4" CornerRadius="7,7,7,7">
+                            <Border.Background>#ebc597</Border.Background>
+                            <ContentPresenter Content="{TemplateBinding ContentControl.Content}" HorizontalAlignment="Center" VerticalAlignment="Center" ></ContentPresenter>
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+
+            <Button Content="两分" Width="120" Height="50" Margin="80, 35, 0, 0" Background="#FFEBC597" BorderThickness="4,4,4,4" Foreground="#FF732E10" FontFamily="FZKai-Z03" FontSize="28" FontWeight="DemiBold" FontStyle="Normal" FontStretch="Normal" >
+                <Button.BorderBrush>
+                    <RadialGradientBrush RadiusX="0.53" RadiusY="0.5" SpreadMethod="Pad">
+                        <GradientStop Color="#FFE59100" Offset="0.8"/>
+                        <GradientStop Color="#FF581B00" Offset="1"/>
+                    </RadialGradientBrush>
+                </Button.BorderBrush>
+                <Button.Template >
+                    <ControlTemplate TargetType="{x:Type Button}" >
+                        <Border BorderBrush="{TemplateBinding Control.BorderBrush}" BorderThickness="4" CornerRadius="7,7,7,7">
+                            <Border.Background>#ebc597</Border.Background>
+                            <ContentPresenter Content="{TemplateBinding ContentControl.Content}" HorizontalAlignment="Center" VerticalAlignment="Center" ></ContentPresenter>
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+
+            <Button Content="三分" Width="120" Height="50" Margin="80, 35, 0, 0" Background="#FFEBC597" BorderThickness="4,4,4,4" Foreground="#FF732E10" FontFamily="FZKai-Z03" FontSize="28" FontWeight="DemiBold" FontStyle="Normal" FontStretch="Normal" >
+                <Button.BorderBrush>
+                    <RadialGradientBrush RadiusX="0.53" RadiusY="0.5" SpreadMethod="Pad">
+                        <GradientStop Color="#FFE59100" Offset="0.8"/>
+                        <GradientStop Color="#FF581B00" Offset="1"/>
+                    </RadialGradientBrush>
+                </Button.BorderBrush>
+                <Button.Template >
+                    <ControlTemplate TargetType="{x:Type Button}" >
+                        <Border BorderBrush="{TemplateBinding Control.BorderBrush}" BorderThickness="4" CornerRadius="7,7,7,7">
+                            <Border.Background>#ebc597</Border.Background>
+                            <ContentPresenter Content="{TemplateBinding ContentControl.Content}" HorizontalAlignment="Center" VerticalAlignment="Center" ></ContentPresenter>
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+        </StackPanel>
 
     </Grid>
 

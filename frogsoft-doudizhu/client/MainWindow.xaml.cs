@@ -40,8 +40,8 @@ namespace frogsoft_doudizhu
         // private List<int> ready = new List<int> { 9, 13, 17, 21, 25, 29 };
         private List<int> leftCardList = new List<int> { 9, 13, 17, 21, 25, 29 }; // 自己手上的牌
 
-        private List<int> leftPutCardList = new List<int> { 9, 13, 17, 21, 25, 29 };    // 上家出的牌
-        private List<int> rightPutCardList = new List<int> { 9, 13, 17, 21, 25, 29 };     // 下家出的牌
+        private List<int> leftPutCardList = new List<int> {  };    // 上家出的牌
+        private List<int> rightPutCardList = new List<int> {  };     // 下家出的牌
 
         private List<int> selectCardList = new List<int> { };       // 已选中的牌
         private List<int> putCardList = new List<int> { };          // 打出去的牌
@@ -148,38 +148,17 @@ namespace frogsoft_doudizhu
 
         private void ButtonPanel_Upgrade(int buttonType) // 添加游戏按钮
         {
-            buttonPanel.Children.Clear();
+            buttonPanelOnPlay.Visibility = Visibility.Collapsed;
+            buttonPanelOnCall.Visibility = Visibility.Collapsed;
 
             switch (buttonType)
             {
                 case BUTTON_ON_CALL:
-
+                    buttonPanelOnCall.Visibility = Visibility.Visible;
 
                     break;
                 case BUTTON_ON_PLAY:
-                    Button reselectButton = new Button();
-                    reselectButton.Content = "重选";
-                    reselectButton.Width = 120;
-                    reselectButton.Height = 50;
-                    reselectButton.Click += ReselectButton_Click;
-                    reselectButton.Margin = new Thickness { Left = 460 - 100, Top = 35 };
-                    buttonPanel.Children.Add(reselectButton);
-
-                    Button skipCardButton = new Button();
-                    skipCardButton.Content = "不出";
-                    skipCardButton.Width = 120;
-                    skipCardButton.Height = 50;
-                    skipCardButton.Click += SkipCardButton_Click;
-                    skipCardButton.Margin = new Thickness { Left = 100, Top = 35 };
-                    buttonPanel.Children.Add(skipCardButton);
-
-                    Button putCardButton = new Button();
-                    putCardButton.Content = "出牌";
-                    putCardButton.Width = 120;
-                    putCardButton.Height = 50;
-                    putCardButton.Click += PutCardButton_Click;
-                    putCardButton.Margin = new Thickness { Left = 100, Top = 35 };
-                    buttonPanel.Children.Add(putCardButton);
+                    buttonPanelOnPlay.Visibility = Visibility.Visible;
                     break;
             }
         }
@@ -209,7 +188,6 @@ namespace frogsoft_doudizhu
                 LeftCardPanel_Upgrade();
                 test++;
             }*/
-            buttonPanel.Visibility = Visibility.Collapsed;
         }
 
         private void PutCardButton_Click(object sender, RoutedEventArgs e) // 出牌
