@@ -1,0 +1,235 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <style>
+        table {
+            border: 0
+        }
+
+        .commslog-data {
+            font-family: Consolas, Courier New, Courier, monospace;
+        }
+
+        .commslog-server {
+            background-color: palevioletred;
+            color: white
+        }
+
+        .commslog-client {
+            background-color: darkseagreen;
+            color: white
+        }
+    </style>
+</head>
+<body>
+    <h1>WebSocket Sample Application</h1>
+    <p id="stateLabel">Ready to connect...</p>
+    <div>
+        <label for="connectionUrl">WebSocket Server URL:</label>
+        <input id="connectionUrl" />
+        <button id="connectButton" type="submit">Connect</button>
+    </div>
+    <p></p>
+    <div>
+        <label for="sendMessage">Message to send:</label>
+        <input id="sendMessage" disabled />
+        <button id="sendButton" type="submit" disabled>Send</button>
+        <button id="closeButton" disabled>Close Socket</button>
+        <button id="testButton" disabled>Test Backend</button>
+    </div>
+
+    <h2>Communication Log</h2>
+    <table style="width: 800px">
+        <thead>
+            <tr>
+                <td style="width: 100px">From</td>
+                <td style="width: 100px">To</td>
+                <td>Data</td>
+            </tr>
+        </thead>
+        <tbody id="commsLog">
+        </tbody>
+    </table>
+
+    <script>
+        var connectionUrl = document.getElementById("connectionUrl");
+        var connectButton = document.getElementById("connectButton");
+        var stateLabel = document.getElementById("stateLabel");
+        var sendMessage = document.getElementById("sendMessage");
+        var sendButton = document.getElementById("sendButton");
+        var commsLog = document.getElementById("commsLog");
+        var closeButton = document.getElementById("closeButton");
+        var testButton = document.getElementById("testButton");
+        var socket;
+        var lastMessage = "";
+
+        var scheme = document.location.protocol === "https:" ? "wss" : "ws";
+        var port = document.location.port ? (":" + document.location.port) : "";
+
+        connectionUrl.value = scheme + "://" + document.location.hostname + port + "/api/games/com/frogsoft/doudizhu/room";
+
+        sendMessage.value = '{"CurrentPlayer": "0", "RoomNo": "0", "MessageType": 0}'
+
+        function updateState() {
+            function disable() {
+                sendMessage.disabled = true;
+                sendButton.disabled = true;
+                closeButton.disabled = true;
+                testButton.disabled = true;
+            }
+            function enable() {
+                sendMessage.disabled = false;
+                sendButton.disabled = false;
+                closeButton.disabled = false;
+                testButton.disabled = false;
+            }
+
+            connectionUrl.disabled = true;
+            connectButton.disabled = true;
+
+            if (!socket) {
+                disable();
+            } else {
+                switch (socket.readyState) {
+                    case WebSocket.CLOSED:
+                        stateLabel.innerHTML = "Closed";
+                        disable();
+                        connectionUrl.disabled = false;
+                        connectButton.disabled = false;
+                        break;
+                    case WebSocket.CLOSING:
+                        stateLabel.innerHTML = "Closing...";
+                        disable();
+                        break;
+                    case WebSocket.CONNECTING:
+                        stateLabel.innerHTML = "Connecting...";
+                        disable();
+                        break;
+                    case WebSocket.OPEN:
+                        stateLabel.innerHTML = "Open";
+                        enable();
+                        break;
+                    default:
+                        stateLabel.innerHTML = "Unknown WebSocket State: " + htmlEscape(socket.readyState);
+                        disable();
+                        break;
+                }
+            }
+        }
+
+        closeButton.onclick = function () {
+            if (!socket || socket.readyState !== WebSocket.OPEN) {
+                alert("socket not connected");
+            }
+            socket.close(1000, "Closing from client");
+        };
+
+        const sendData = (data) => {
+            if (!socket || socket.readyState !== WebSocket.OPEN) {
+                alert("socket not connected");
+            }
+            socket.send(data);
+            commsLog.innerHTML += '<tr>' +
+                '<td class="commslog-client">Client</td>' +
+                '<td class="commslog-server">Server</td>' +
+                '<td class="commslog-data">' + htmlEscape(data) + '</td></tr>';
+        }
+
+        sendButton.onclick = function () {
+
+            var data = sendMessage.value;
+            sendData(data);
+        };
+
+        const delay = (ms) => new Promise((res) => setTimeout(res, ms));
+
+        testButton.onclick = function () {
+            const msgs = [
+                {
+                    CurrentPlayer: "0",
+                    RoomNo: "0",
+                    MessageType: 0,
+                },
+                {
+                    CurrentPlayer: "1",
+                    RoomNo: "0",
+                    MessageType: 0,
+                },
+                {
+                    CurrentPlayer: "2",
+                    RoomNo: "0",
+                    MessageType: 0,
+                },
+                {
+                    CurrentPlayer: "0",
+                    RoomNo: "0",
+                    MessageType: 2,
+                    Players: {
+                        Status: 1
+                    }
+                },
+            ]
+
+            const reses = [
+                '{"LastCombination":[],"MessageType":0,"Players":[{"CardsInHand":[],"CardsOut":[],"CallScore":-1,"Id":"0","Status":0}],"CurrentPlayer":null,"CurrentPlayerConnectionId":null,"Message":"","RoomNo":"0"}',
+                '{"LastCombination":[],"MessageType":0,"Players":[{"CardsInHand":[],"CardsOut":[],"CallScore":-1,"Id":"0","Status":0},{"CardsInHand":[],"CardsOut":[],"CallScore":-1,"Id":"1","Status":0}],"CurrentPlayer":null,"CurrentPlayerConnectionId":null,"Message":"","RoomNo":"0"}',
+                '{"LastCombination":[],"MessageType":0,"Players":[{"CardsInHand":[],"CardsOut":[],"CallScore":-1,"Id":"0","Status":0},{"CardsInHand":[],"CardsOut":[],"CallScore":-1,"Id":"1","Status":0},{"CardsInHand":[],"CardsOut":[],"CallScore":-1,"Id":"2","Status":0}],"CurrentPlayer":null,"CurrentPlayerConnectionId":null,"Message":"","RoomNo":"0"}'
+            ]
+
+            const delayTime = 500
+            msgs.forEach(async (msg, idx) => {
+                await delay((idx) * delayTime)
+                sendData(JSON.stringify(msg))
+                await delay(delayTime / 2)
+                if (lastMessage === reses[idx]) {
+                    commsLog.innerHTML += '<tr>' +
+                        '<td></td>' +
+                        '<td></td>' +
+                        '<td class="commslog-data" style="background: green; color: white">Test Case ' + (idx + 1) + ' Passed</td></tr>';
+                } else {
+                    commsLog.innerHTML += '<tr>' +
+                        '<td></td>' +
+                        '<td></td>' +
+                        '<td class="commslog-data" style="background: red; color: white">Test Case ' + (idx + 1) + ' Failed</td></tr>';
+                }
+            })
+        }
+
+        connectButton.onclick = function () {
+            stateLabel.innerHTML = "Connecting";
+            socket = new WebSocket(connectionUrl.value);
+            socket.onopen = function (event) {
+                updateState();
+                commsLog.innerHTML += '<tr>' +
+                    '<td colspan="3" class="commslog-data">Connection opened</td>' +
+                    '</tr>';
+            };
+            socket.onclose = function (event) {
+                updateState();
+                commsLog.innerHTML += '<tr>' +
+                    '<td colspan="3" class="commslog-data">Connection closed. Code: ' + htmlEscape(event.code) + '. Reason: ' + htmlEscape(event.reason) + '</td>' +
+                    '</tr>';
+            };
+            socket.onerror = updateState;
+            socket.onmessage = function (event) {
+                lastMessage = event.data;
+                commsLog.innerHTML += '<tr>' +
+                    '<td class="commslog-server">Server</td>' +
+                    '<td class="commslog-client">Client</td>' +
+                    '<td class="commslog-data">' + htmlEscape(lastMessage) + '</td></tr>';
+            };
+        };
+
+        function htmlEscape(str) {
+            return str.toString()
+                .replace(/&/g, '&amp;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;');
+        }
+    </script>
+</body>
+</html>
