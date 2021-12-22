@@ -58,12 +58,7 @@ namespace backend.GameService.com.frogsoft.doudizhu.Game
             existingGame.LastCombination = playerInRemoteGame.CardsOut;
 
 
-            if (existingGame.LastPlayer == playerInRemoteGame.Id)
-            {
-                existingGame.Players[0].CardsOut = new List<int>();
-                existingGame.Players[1].CardsOut = new List<int>();
-                existingGame.Players[2].CardsOut = new List<int>();
-            }
+
 
             if (playerInRemoteGame.CardsOut.Count > 0)
             {
@@ -89,6 +84,13 @@ namespace backend.GameService.com.frogsoft.doudizhu.Game
                     existingGame.AssignLandlordCards();
                     existingGame.CurrentPlayer = existingGame.GetLandlord().Id;
                 }
+            }
+
+            if (existingGame.LastPlayer == existingGame.CurrentPlayer)
+            {
+                existingGame.Players[0].CardsOut = new List<int>();
+                existingGame.Players[1].CardsOut = new List<int>();
+                existingGame.Players[2].CardsOut = new List<int>();
             }
 
 
