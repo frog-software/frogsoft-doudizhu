@@ -39,7 +39,7 @@ namespace frogsoft_doudizhu
 
         private List<int> lordCardList = new List<int> { 54, 54, 54 };  // 地主牌
 
-        private List<int> ownCardList = new List<int> { }; // 自己手上的牌
+        private List<int> ownCardList = new List<int> { 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, }; // 自己手上的牌
 
         private List<int> leftPutCardList = new List<int> { };     // 上家出的牌
         private List<int> rightPutCardList = new List<int> { };    // 下家出的牌
@@ -47,12 +47,14 @@ namespace frogsoft_doudizhu
         private List<int> selectCardList = new List<int> { };       // 已选中的牌
         private List<int> ownPutCardList = new List<int> { };       // 打出去的牌
 
-        private List<string> callText = new List<string> { "", "不叫", "一分", "两分", "三分" }; 
+        private List<string> callText = new List<string> { "", "不叫", "一分", "两分", "三分" };
 
         private WebSocket ws = new WebSocket("ws://localhost:5174/api/games/com/frogsoft/doudizhu/room");
 
         private PlayerModel currentPlayer = new PlayerModel();
         private GameModel currentGame = new GameModel();
+
+        private bool isAuto = false;
 
         private void LordCardPanel_Upgrade() // 更新地主牌动画
         {
@@ -300,7 +302,7 @@ namespace frogsoft_doudizhu
                 Random random = new Random();
                 currentPlayer.Id = "user" + random.Next(1000).ToString();
                 currentGame.CurrentPlayer = currentPlayer.Id;
-                currentGame.RoomNo = "1";
+                currentGame.RoomNo = "429";
                 currentGame.MessageType = MessageType.JOIN;
 
                 ws.Send(JsonConvert.SerializeObject(currentGame));
@@ -353,10 +355,31 @@ namespace frogsoft_doudizhu
                             if (leftPlayer.CardsOut.Count == 0 && rightPlayer.CardsOut.Count == 0)
                                 skipCardButton.Visibility = Visibility.Hidden;
                             else
-                                skipCardButton.Visibility= Visibility.Visible;
+                                skipCardButton.Visibility = Visibility.Visible;
+
+                            if (isAuto)
+                            {
+                                if (skipCardButton.Visibility == Visibility.Hidden)
+                                {
+                                    var pack = new Pack(ownCardList);
+                                    pack.MinCase1();
+                                    selectCardList = pack.getAnsShouldOut();
+                                }
+                                else
+                                {
+                                    selectCardList = new Pack(ownCardList).NextPack(new Pack(currentGame.LastCombination));
+                                }
+
+                                currentGame.MessageType = MessageType.UPDATE;
+                                currentGame.GetPlayerById(currentPlayer.Id).CardsOut = selectCardList;
+                                ws.Send(JsonConvert.SerializeObject(currentGame));
+
+                                selectCardList.Clear();
+                            }
                         }
                         else
                             ButtonPanel_Upgrade(NO_BUTTON);
+
 
                         if (myself.Status == PlayerStatus.LANDLORD || myself.Status == PlayerStatus.PEASANT)
                         {
@@ -379,6 +402,8 @@ namespace frogsoft_doudizhu
                         RightPutCardPanel_Upgrade();
                         OwnPutCardPanel_Upgrade();
                         OwnCardPanel_Upgrade();
+
+
                     });
                 }
             };
@@ -387,6 +412,33 @@ namespace frogsoft_doudizhu
             {
                 MessageBox.Show(e.Message);
             };
+        }
+
+        private void AutoPlayButton_Click(object sender, RoutedEventArgs e)
+        {
+            isAuto = !isAuto;
+            if (isAuto)
+            {
+                autoPlayButton.Content = "取消托管";
+                if (skipCardButton.Visibility == Visibility.Hidden)
+                {
+                    var pack = new Pack(ownCardList);
+                    pack.MinCase1();
+                    selectCardList = pack.getAnsShouldOut();
+                }
+                else
+                {
+                    selectCardList = new Pack(ownCardList).NextPack(new Pack(currentGame.LastCombination));
+                }
+
+                currentGame.MessageType = MessageType.UPDATE;
+                currentGame.GetPlayerById(currentPlayer.Id).CardsOut = selectCardList;
+                ws.Send(JsonConvert.SerializeObject(currentGame));
+
+                selectCardList.Clear();
+            }
+            else
+                autoPlayButton.Content = "托管";
         }
     }
 }

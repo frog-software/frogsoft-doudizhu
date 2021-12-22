@@ -67,7 +67,7 @@
             <Image Source="/images/others/logo.png" Margin="76,212,922,232" />
         </Grid>
 
-        <Grid x:Name="mainGrid" Visibility="Visible">
+        <Grid x:Name="mainGrid" Visibility="Visible" >
             <Image Source="/images/others/title3.png" Margin="211,52,211,340" />
 
             <StackPanel x:Name="mainPanel">
@@ -77,11 +77,13 @@
         </Grid>
 
         <Grid x:Name="gameGrid" Visibility="Collapsed">
-            
-            
             <TextBlock x:Name="ownCallTextBlock" Text="" Style="{StaticResource GeneralText}" Margin="585,170,585,0" />
             <TextBlock x:Name="leftCallTextBlock" Text="" Style="{StaticResource GeneralText}" Margin="215,200,955,464" Foreground="#FFEDD7BD" />
             <TextBlock x:Name="rightCallTextBlock" Text="" Style="{StaticResource GeneralText}" Margin="695,200,67,464" Foreground="#FFEDD7BD" />
+            
+            <TextBlock x:Name="ownTextBlock" Text="" Style="{StaticResource GeneralText}" Margin="585,170,585,0" />
+            <TextBlock x:Name="leftTextBlock" Text="" Style="{StaticResource GeneralText}" Margin="215,200,955,464" Foreground="#FFEDD7BD" />
+            <TextBlock x:Name="rightTextBlock" Text="" Style="{StaticResource GeneralText}" Margin="695,200,67,464" Foreground="#FFEDD7BD" />
 
             <StackPanel x:Name="lordCardPanel" Margin="0,0,0,550" Orientation="Horizontal" />
             <StackPanel x:Name="ownCardPanel" Margin="0,405,0,0" Orientation="Horizontal" />
@@ -90,10 +92,11 @@
             <StackPanel x:Name="leftPutCardPanel" Margin="0,140,450,400" Orientation="Horizontal" />
             <StackPanel x:Name="rightPutCardPanel" Margin="450,140,0,400" Orientation="Horizontal" />
 
-            <StackPanel x:Name="buttonPanelOnPlay" Margin="0,350,0,200" Orientation="Horizontal" Visibility="Collapsed">
-                <Button x:Name="reselectButton" Content="重选" Width="120" Height="50" Margin="360,35,0,0" Style="{StaticResource GeneralButton}" Click="ReselectButton_Click" />
-                <Button x:Name="skipCardButton" Content="不出" Width="120" Height="50" Margin="100,35,0,0" Style="{StaticResource GeneralButton}" Click="SkipCardButton_Click" />
-                <Button x:Name="putCardButton" Content="出牌" Width="120" Height="50" Margin="100,35,0,0" Style="{StaticResource GeneralButton}" Click="PutCardButton_Click" />
+            <StackPanel x:Name="buttonPanelOnPlay" Margin="0,350,0,0" Orientation="Horizontal" Visibility="Collapsed">
+                <Button x:Name="reselectButton" Content="重选" Width="120" Height="50" Margin="360,0,0,165" Style="{StaticResource GeneralButton}" Click="ReselectButton_Click" />
+                <Button x:Name="skipCardButton" Content="不出" Width="120" Height="50" Margin="100,0,0,165" Style="{StaticResource GeneralButton}" Click="SkipCardButton_Click" />
+                <Button x:Name="putCardButton" Content="出牌" Width="120" Height="50" Margin="100,0,0,165" Style="{StaticResource GeneralButton}" Click="PutCardButton_Click" />
+                <Button x:Name="autoPlayButton" Content="托管" Width="160" Height="50" Margin="160,200,0,0" Style="{StaticResource GeneralButton}" Click="AutoPlayButton_Click" />
             </StackPanel>
 
             <StackPanel x:Name="buttonPanelOnCall" Margin="0,350,0,200" Orientation="Horizontal" Visibility="Collapsed">
@@ -102,6 +105,8 @@
                 <Button x:Name="callTwo" Content="两分" Width="120" Height="50" Margin="80,35,0,0" Style="{StaticResource GeneralButton}" Click="CallTwo_Click" />
                 <Button x:Name="callThree" Content="三分" Width="120" Height="50" Margin="80,35,0,0" Style="{StaticResource GeneralButton}" Click="CallThree_Click" />
             </StackPanel>
+            
+            
         </Grid>
     </Grid>
 
