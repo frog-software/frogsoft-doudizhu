@@ -12,7 +12,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using System.Threading;
+using WebSocketSharp;
+using Newtonsoft.Json;
+using client.Models;
 
 namespace frogsoft_doudizhu
 {
@@ -25,40 +27,43 @@ namespace frogsoft_doudizhu
         {
             InitializeComponent();
 
-            LeftCardPanel_Upgrade();
-            LeftPutCardPanel_Upgrade();
-            RightPutCardPanel_Upgrade();
+            WebSocketInitialize();
+
+            /*OwnCardPanel_Upgrade();
             LordCardPanel_Upgrade();
-            ButtonPanel_Upgrade(BUTTON_ON_PLAY);
+            ButtonPanel_Upgrade(BUTTON_ON_CALL);*/
         }
 
-        private const int BUTTON_ON_PLAY = 0;   // 打牌时的按钮
-        private const int BUTTON_ON_CALL = 1;   // 叫分时的按钮
+        private const int NO_BUTTON = 0;        // 不显示按钮
+        private const int BUTTON_ON_PLAY = 1;   // 打牌时的按钮
+        private const int BUTTON_ON_CALL = 2;   // 叫分时的按钮
 
         private const int CARD_DESELECT_MARGIN = -80;   // 不被选中的牌
         private const int CARD_SELECT_MARGIN = -20;     // 被选中的牌
 
         private List<int> lordCardList = new List<int> { 54, 54, 54 };  // 地主牌
 
-        // private List<int> ready = new List<int> { 9, 13, 17, 21, 25, 29 };
-        private List<int> leftCardList = new List<int> { 54, 54, 54, 54, 54, 54, 54, 54, 54, 54, }; // 自己手上的牌
+        private List<int> ownCardList = new List<int> {  }; // 自己手上的牌
 
-        private List<int> leftPutCardList = new List<int> { 9, 13, 17, 21, 25, 29 };    // 上家出的牌
-        private List<int> rightPutCardList = new List<int> { 9, 13, 17, 21, 25, 29 };     // 下家出的牌
+        private List<int> leftPutCardList = new List<int> {  };     // 上家出的牌
+        private List<int> rightPutCardList = new List<int> {  };    // 下家出的牌
 
         private List<int> selectCardList = new List<int> { };       // 已选中的牌
-        private List<int> putCardList = new List<int> { };          // 打出去的牌
+        private List<int> ownPutCardList = new List<int> { };       // 打出去的牌
 
-        // private int test = 0;
+        private WebSocket ws = new WebSocket("ws://localhost:5174/api/games/com/frogsoft/doudizhu/room");
+
+        private PlayerModel currentPlayer = new PlayerModel();
+        private GameModel currentGame = new GameModel();
 
         private void LordCardPanel_Upgrade() // 更新地主牌动画
         {
             OutCardPanel_Upgrade(lordCardPanel, lordCardList, 0);
         }
 
-        private void PutCardPanel_Upgrade() // 更新自己的出牌堆动画
+        private void OwnPutCardPanel_Upgrade() // 更新自己的出牌堆动画
         {
-            OutCardPanel_Upgrade(putCardPanel, putCardList, 1);
+            OutCardPanel_Upgrade(ownPutCardPanel, ownPutCardList, 1);
         }
 
         private void LeftPutCardPanel_Upgrade() // 更新上家的出牌堆动画
@@ -73,7 +78,7 @@ namespace frogsoft_doudizhu
 
         private void AllCardPanel_Clear() // 清除牌桌上的牌
         {
-            putCardPanel.Children.Clear();
+            ownPutCardPanel.Children.Clear();
             rightPutCardPanel.Children.Clear();
             leftPutCardPanel.Children.Clear();
         }
@@ -113,10 +118,10 @@ namespace frogsoft_doudizhu
             }
         }
 
-        private void LeftCardPanel_Upgrade() // 更新剩余手牌堆动画
+        private void OwnCardPanel_Upgrade() // 更新剩余手牌堆动画
         {
-            leftCardPanel.Children.Clear();
-            foreach (int card in leftCardList)
+            ownCardPanel.Children.Clear();
+            foreach (int card in ownCardList)
             {
                 Image image = new Image();
                 image.Source = new BitmapImage(new Uri("/images/cards/" + card.ToString() + ".png", UriKind.Relative));
@@ -127,11 +132,11 @@ namespace frogsoft_doudizhu
                 image.Margin = new Thickness { Left = -70, Bottom = CARD_DESELECT_MARGIN };
                 image.MouseLeftButtonUp += CardImage_Click;
 
-                leftCardPanel.Children.Add(image);
+                ownCardPanel.Children.Add(image);
             }
 
-            if (leftCardList.Count > 0)
-                (leftCardPanel.Children[0] as Image).Margin = new Thickness { Left = (window.Width - (leftCardList.Count - 1) * 35 - 105) / 2, Bottom = CARD_DESELECT_MARGIN };
+            if (ownCardList.Count > 0)
+                (ownCardPanel.Children[0] as Image).Margin = new Thickness { Left = (window.Width - (ownCardList.Count - 1) * 35 - 105) / 2, Bottom = CARD_DESELECT_MARGIN };
         }
 
         private void CardImage_Click(object sender, RoutedEventArgs e) // 牌被点击时
@@ -157,16 +162,17 @@ namespace frogsoft_doudizhu
             }
         }
 
-        private void ButtonPanel_Upgrade(int buttonType) // 添加游戏按钮
+        private void ButtonPanel_Upgrade(int buttonType) // 牌区按钮选择
         {
             buttonPanelOnPlay.Visibility = Visibility.Collapsed;
             buttonPanelOnCall.Visibility = Visibility.Collapsed;
 
             switch (buttonType)
             {
+                case NO_BUTTON:
+                    break;
                 case BUTTON_ON_CALL:
                     buttonPanelOnCall.Visibility = Visibility.Visible;
-
                     break;
                 case BUTTON_ON_PLAY:
                     buttonPanelOnPlay.Visibility = Visibility.Visible;
@@ -177,7 +183,7 @@ namespace frogsoft_doudizhu
         private void ReselectButton_Click(object sender, RoutedEventArgs e) // 重选
         {
             selectCardList.Clear();
-            foreach (var i in leftCardPanel.Children)
+            foreach (var i in ownCardPanel.Children)
             {
                 Image image = i as Image;
                 image.Margin = new Thickness { Left = image.Margin.Left, Bottom = CARD_DESELECT_MARGIN };
@@ -187,7 +193,7 @@ namespace frogsoft_doudizhu
         private void SkipCardButton_Click(object sender, RoutedEventArgs e) // 不出
         {
             selectCardList.Clear();
-            foreach (var i in leftCardPanel.Children)
+            foreach (var i in ownCardPanel.Children)
             {
                 Image image = i as Image;
                 image.Margin = new Thickness { Left = image.Margin.Left, Bottom = CARD_DESELECT_MARGIN };
@@ -205,26 +211,26 @@ namespace frogsoft_doudizhu
         {
             if (selectCardList.Count > 0) // 有选择牌
             {
-                putCardList.Clear();
+                ownPutCardList.Clear();
 
                 // 此处对selectCardList做一个排序
 
                 foreach (var card in selectCardList)
-                    putCardList.Add(card);
+                    ownPutCardList.Add(card);
 
                 if (true) // 允许出牌
                 {
-                    foreach (var i in leftCardPanel.Children)
+                    foreach (var i in ownCardPanel.Children)
                     {
                         Image image = i as Image;
 
                         if (image.Margin.Bottom == CARD_SELECT_MARGIN)
                         {
-                            for (var j = 0; j < leftCardList.Count; j++)
+                            for (var j = 0; j < ownCardList.Count; j++)
                             {
-                                if (leftCardList[j] == Convert.ToInt32(image.Name[4..]))
+                                if (ownCardList[j] == Convert.ToInt32(image.Name[4..]))
                                 {
-                                    leftCardList.RemoveAt(j);
+                                    ownCardList.RemoveAt(j);
                                     j--;
                                 }
                             }
@@ -232,8 +238,8 @@ namespace frogsoft_doudizhu
                     }
 
                     selectCardList.Clear();
-                    PutCardPanel_Upgrade();
-                    LeftCardPanel_Upgrade();
+                    OwnPutCardPanel_Upgrade();
+                    OwnCardPanel_Upgrade();
                 }
                 else // 不允许出牌
                 {
@@ -254,13 +260,150 @@ namespace frogsoft_doudizhu
 
         private void StartGame_Click(object sender, RoutedEventArgs e) // 开始匹配
         {
-            mainGrid.Visibility = Visibility.Collapsed;
-            gameGrid.Visibility = Visibility.Visible;
+            ws.Connect();
         }
 
         private void QuitGame_Click(object sender, RoutedEventArgs e) // 退出游戏
         {
             window.Close();
+        }
+
+        private void CallNo_Click(object sender, RoutedEventArgs e) // 不叫
+        {
+            ownCallTextBlock.Text = "不叫";
+            ButtonPanel_Upgrade(NO_BUTTON);
+
+            var __currentPlayer = currentGame.GetPlayerById(currentPlayer.Id);
+            __currentPlayer.CallScore = 0;
+            currentGame.MessageType = MessageType.UPDATE;
+            ws.Send(JsonConvert.SerializeObject(currentGame));
+        }
+
+        private void CallOne_Click(object sender, RoutedEventArgs e) // 一分
+        {
+            ownCallTextBlock.Text = "一分";
+            ButtonPanel_Upgrade(NO_BUTTON);
+
+            var __currentPlayer = currentGame.GetPlayerById(currentPlayer.Id);
+            __currentPlayer.CallScore = 1;
+            currentGame.MessageType = MessageType.UPDATE;
+            ws.Send(JsonConvert.SerializeObject(currentGame));
+        }
+
+        private void CallTwo_Click(object sender, RoutedEventArgs e) // 两分
+        {
+            ownCallTextBlock.Text = "两分";
+            ButtonPanel_Upgrade(NO_BUTTON);
+
+            var __currentPlayer = currentGame.GetPlayerById(currentPlayer.Id);
+            __currentPlayer.CallScore = 2;
+            currentGame.MessageType = MessageType.UPDATE;
+            ws.Send(JsonConvert.SerializeObject(currentGame));
+        }
+
+        private void CallThree_Click(object sender, RoutedEventArgs e) // 三分
+        {
+            ownCallTextBlock.Text = "三分";
+            ButtonPanel_Upgrade(BUTTON_ON_PLAY);
+            Call_Clear();
+
+            lordCardList.Clear();
+
+            var __currentPlayer = currentGame.GetPlayerById(currentPlayer.Id);
+            __currentPlayer.CallScore = 3;
+            currentGame.MessageType = MessageType.UPDATE;
+            ws.Send(JsonConvert.SerializeObject(currentGame));
+
+            LordCardPanel_Upgrade();
+        }
+
+        private void Call_Clear() // 清除场上的叫分情况
+        {
+            ownCallTextBlock.Text = string.Empty;
+            leftCallTextBlock.Text = string.Empty;
+            rightCallTextBlock.Text = string.Empty;
+        }
+
+        private void WebSocketInitialize()
+        {
+            ws.OnOpen += (sender, e) =>
+            {
+                Random random = new Random();
+                currentPlayer.Id = "user" + random.Next(1000).ToString();
+                currentGame.CurrentPlayer = currentPlayer.Id;
+                currentGame.RoomNo = "7";
+                currentGame.MessageType = MessageType.JOIN;
+
+                ws.Send(JsonConvert.SerializeObject(currentGame));
+
+                mainGrid.Visibility = Visibility.Collapsed;
+            };
+
+            ws.OnMessage += (sender, e) =>
+            {
+                currentGame = JsonConvert.DeserializeObject<GameModel>(e.Data);
+
+
+                var myself = currentGame.GetPlayerById(currentPlayer.Id);
+
+                if (currentGame.list.Count == 0) // 进入房间
+                {
+                    gameGrid.Dispatcher.Invoke(() =>
+                    {
+                        gameGrid.Visibility = Visibility.Visible;
+                    });
+
+                    if (myself.Status != PlayerStatus.READY)
+                    {
+                        myself.Status = PlayerStatus.READY;
+                        currentGame.MessageType = MessageType.UPDATE;
+                        currentGame.CurrentPlayer = currentPlayer.Id;
+                        ws.Send(JsonConvert.SerializeObject(currentGame));
+                    }
+                }
+                else
+                {
+                    ownCardList = myself.CardsInHand;
+
+                    leftPutCardList = currentGame.GetNextPlayerById(currentGame.GetNextPlayerById(currentPlayer.Id).Id).CardsOut;
+                    rightPutCardList = currentGame.GetNextPlayerById(currentPlayer.Id).CardsOut;
+                    ownPutCardList = myself.CardsOut;
+
+                    if (myself.Status == PlayerStatus.LANDLORD || myself.Status == PlayerStatus.PEASANT)
+                    {
+                        lordCardList = currentGame.list.GetRange(51, 3);
+                        Call_Clear();
+                    }
+                        
+                    else
+                    {
+                        lordCardList.Clear();
+                        for (int i = 1; i <= 3; i++)
+                            lordCardList.Add(54);
+                    }
+
+                    gameGrid.Dispatcher.Invoke(() =>
+                    {
+                        if (currentGame.CurrentPlayer == myself.Id && !(myself.Status == PlayerStatus.LANDLORD || myself.Status == PlayerStatus.PEASANT))
+                            ButtonPanel_Upgrade(BUTTON_ON_CALL);
+                        else if (currentGame.CurrentPlayer == myself.Id && (myself.Status == PlayerStatus.LANDLORD || myself.Status == PlayerStatus.PEASANT))
+                            ButtonPanel_Upgrade(BUTTON_ON_PLAY);
+                        else
+                            ButtonPanel_Upgrade(NO_BUTTON);
+
+                        LordCardPanel_Upgrade();
+                        LeftPutCardPanel_Upgrade();
+                        RightPutCardPanel_Upgrade();
+                        OwnPutCardPanel_Upgrade();
+                        OwnCardPanel_Upgrade();
+                    });
+                }
+            };
+
+            ws.OnError += (sender, e) =>
+            {
+                MessageBox.Show(e.Message);
+            };
         }
     }
 }

@@ -16,66 +16,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="images\cards\0.png" />
-    <None Remove="images\cards\1.png" />
-    <None Remove="images\cards\10.png" />
-    <None Remove="images\cards\11.png" />
-    <None Remove="images\cards\12.png" />
-    <None Remove="images\cards\13.png" />
-    <None Remove="images\cards\14.png" />
-    <None Remove="images\cards\15.png" />
-    <None Remove="images\cards\16.png" />
-    <None Remove="images\cards\17.png" />
-    <None Remove="images\cards\18.png" />
-    <None Remove="images\cards\19.png" />
-    <None Remove="images\cards\2.png" />
-    <None Remove="images\cards\20.png" />
-    <None Remove="images\cards\21.png" />
-    <None Remove="images\cards\22.png" />
-    <None Remove="images\cards\23.png" />
-    <None Remove="images\cards\24.png" />
-    <None Remove="images\cards\25.png" />
-    <None Remove="images\cards\26.png" />
-    <None Remove="images\cards\27.png" />
-    <None Remove="images\cards\28.png" />
-    <None Remove="images\cards\29.png" />
-    <None Remove="images\cards\3.png" />
-    <None Remove="images\cards\30.png" />
-    <None Remove="images\cards\31.png" />
-    <None Remove="images\cards\32.png" />
-    <None Remove="images\cards\33.png" />
-    <None Remove="images\cards\34.png" />
-    <None Remove="images\cards\35.png" />
-    <None Remove="images\cards\36.png" />
-    <None Remove="images\cards\37.png" />
-    <None Remove="images\cards\38.png" />
-    <None Remove="images\cards\39.png" />
-    <None Remove="images\cards\4.png" />
-    <None Remove="images\cards\40.png" />
-    <None Remove="images\cards\41.png" />
-    <None Remove="images\cards\42.png" />
-    <None Remove="images\cards\43.png" />
-    <None Remove="images\cards\44.png" />
-    <None Remove="images\cards\45.png" />
-    <None Remove="images\cards\46.png" />
-    <None Remove="images\cards\47.png" />
-    <None Remove="images\cards\48.png" />
-    <None Remove="images\cards\49.png" />
-    <None Remove="images\cards\5.png" />
-    <None Remove="images\cards\50.png" />
-    <None Remove="images\cards\51.png" />
-    <None Remove="images\cards\52.png" />
-    <None Remove="images\cards\53.png" />
-    <None Remove="images\cards\54.png" />
-    <None Remove="images\cards\6.png" />
-    <None Remove="images\cards\7.png" />
-    <None Remove="images\cards\8.png" />
-    <None Remove="images\cards\9.png" />
-    <None Remove="images\others\background.jpg" />
-    <None Remove="images\others\logo.png" />
-    <None Remove="images\others\title1.png" />
-    <None Remove="images\others\title2.png" />
-    <None Remove="images\others\title3.png" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="WebSocketSharp-netstandard" Version="1.0.1" />
   </ItemGroup>
 
   <ItemGroup>
