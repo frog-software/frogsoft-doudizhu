@@ -277,6 +277,22 @@ namespace test
         }
         private int san1()
         {
+            List<int> Single;
+            List<int> Double;
+            List<int> Triple;
+            List<int> Quard;
+            Single = (from i in map
+                      where i.Value == 1
+                      select i.Key).ToList();
+            Double = (from i in map
+                      where i.Value == 2
+                      select i.Key).ToList();
+            Triple = (from i in map
+                      where i.Value == 3
+                      select i.Key).ToList();
+            Quard = (from i in map
+                     where i.Value == 4
+                     select i.Key).ToList();
             int ans = 0;
             bool canRocket = map.ContainsKey(14) && map[14] == 1 && map.ContainsKey(15) && map[15] == 1;
             int[] count = new int[5];
@@ -529,7 +545,7 @@ namespace test
             for (int i = 0; i < 1 << p.Count; i++)
             {
                 List<int> list = new();
-                string s = Convert.ToString(i, 2);
+                string s = Convert.ToString(i, 2).PadLeft(p.Count, '0');
                 for (int k = 0; k < p.Count; k++)
                     if (s[k] == '1')
                     {
