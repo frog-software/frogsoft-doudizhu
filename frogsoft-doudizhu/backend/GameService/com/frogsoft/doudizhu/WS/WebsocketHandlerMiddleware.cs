@@ -147,9 +147,9 @@ namespace backend.GameService.com.frogsoft.doudizhu.WS
                         
                         var game = GameCollection.GetGameByRoomNo(roomNo);
 
-                        game.EndGame(client.Id);
+                        game.EndGame(message.CurrentPlayerConnectionId);
 
-                        game.Players.RemoveAll(p => p.ConnectionId == client.Id);
+                        game.Players.RemoveAll(p => p.ConnectionId == message.CurrentPlayerConnectionId);
 
                         _logger.LogInformation($"Room {roomNo} now has {game.Players.Count()} players");
 
