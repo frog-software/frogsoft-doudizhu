@@ -52,7 +52,11 @@ namespace backend.GameService.com.frogsoft.doudizhu.Game
 
             playerInExistingGame.CopyFrom(playerInRemoteGame);
 
-            playerInExistingGame.Passed++;
+            if (existingGame.HasGameStarted)
+            {
+                playerInExistingGame.Passed++;
+            }
+            
 
             // the remote current player will soon be the last
             if (playerInRemoteGame.CardsOut.Count > 0)
