@@ -250,7 +250,8 @@ namespace test
         public static bool operator >(Pack pack1, Pack pack2)
         {
             if (pack1 == null || pack2 == null) return false;
-            if (pack1.Category == Category.ROCKET) return true;
+            if (pack1.Category == Category.ROCKET && pack2.Category != Category.ROCKET) return true;
+            if (pack1.Category == Category.BOMB && pack2.Category != Category.BOMB) return true;
             if (pack1.Category != pack2.Category) return false;
             if (pack1.Subtype != pack2.Subtype) return false;
             return pack1.MaxValue > pack2.MaxValue;
@@ -258,6 +259,8 @@ namespace test
         public static bool operator <(Pack pack1, Pack pack2)
         {
             if (pack1 == null || pack2 == null) return false;
+            if (pack2.Category == Category.ROCKET && pack1.Category != Category.ROCKET) return true;
+            if (pack2.Category == Category.BOMB && pack1.Category != Category.BOMB) return true;
             if (pack1.Category != pack2.Category) return false;
             if (pack1.Subtype != pack2.Subtype) return false;
             return pack1.MaxValue < pack2.MaxValue;
@@ -274,6 +277,22 @@ namespace test
         }
         private int san1()
         {
+            List<int> Single;
+            List<int> Double;
+            List<int> Triple;
+            List<int> Quard;
+            Single = (from i in map
+                      where i.Value == 1
+                      select i.Key).ToList();
+            Double = (from i in map
+                      where i.Value == 2
+                      select i.Key).ToList();
+            Triple = (from i in map
+                      where i.Value == 3
+                      select i.Key).ToList();
+            Quard = (from i in map
+                     where i.Value == 4
+                     select i.Key).ToList();
             int ans = 0;
             bool canRocket = map.ContainsKey(14) && map[14] == 1 && map.ContainsKey(15) && map[15] == 1;
             int[] count = new int[5];
@@ -522,21 +541,24 @@ namespace test
         {
             int min = this.MinCase1();
             Pack ansPack = new Pack(new List<int>());
-            int ans = 0x3f3f3f;
-            for (int i = 0; i < 1 << p.Count; i++)
+            int ans = 0x3f3f3f3f;
+            for (int i = 0; i < 1 << Count; i++)
             {
                 List<int> list = new();
-                string s = Convert.ToString(i, 2);
-                for (int k = 0; k < p.Count; k++)
+                string s = Convert.ToString(i, 2).PadLeft(Count, '0');
+                for (int k = 0; k < Count; k++)
                     if (s[k] == '1')
                     {
-                        list.Add(k);
+                        list.Add(Cards[k].getId());
                     }
+
                 Pack pack = new Pack(list);
                 if (pack > p)
                 {
+                    Pack.PrintList(pack.getList());
                     Pack t = this - pack;
                     int temp = t.MinCase1();
+                    Console.WriteLine("{0}-{1}", s, temp);
                     if (temp < ans)
                     {
                         ans = temp;
