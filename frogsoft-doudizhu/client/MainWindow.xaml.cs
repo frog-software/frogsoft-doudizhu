@@ -39,26 +39,33 @@ namespace frogsoft_doudizhu
             bgm = BGM.WELCOME;
             soundPlayer.Play();
         }
+        private BGM _bgm = BGM.NONE;
         private BGM bgm
         {
             get
             {
-                return bgm;
+                return _bgm;
             }
             set
             {
-                switch (value)
+                this.soundPlayer.Dispatcher.Invoke(new Action(() =>
                 {
-                    case BGM.WELCOME:
-                        soundPlayer.Source = new Uri(Environment.CurrentDirectory + @"\assets\sound\welcome.m4a");
-                        break;
-                    case BGM.NORMAL:
-                        soundPlayer.Source = new Uri(Environment.CurrentDirectory + @"\assets\sound\normal.m4a");
-                        break;
-                    case BGM.EXCITING:
-                        soundPlayer.Source = new Uri(Environment.CurrentDirectory + @"\assets\sound\exciting.m4a");
-                        break;
-                }
+                    switch (value)
+                    {
+                        case BGM.WELCOME:
+                            _bgm = value;
+                            soundPlayer.Source = new Uri(Environment.CurrentDirectory + @"\assets\sound\welcome.m4a");
+                            break;
+                        case BGM.NORMAL:
+                            _bgm = value;
+                            soundPlayer.Source = new Uri(Environment.CurrentDirectory + @"\assets\sound\normal.m4a");
+                            break;
+                        case BGM.EXCITING:
+                            _bgm = value;
+                            soundPlayer.Source = new Uri(Environment.CurrentDirectory + @"\assets\sound\exciting.m4a");
+                            break;
+                    }
+                }));
             }
         }
         private const int NO_BUTTON = 0;        // 不显示按钮
@@ -507,7 +514,6 @@ namespace frogsoft_doudizhu
                         && bgm != BGM.EXCITING)
                         {
                             soundPlayer.Stop();
-
                             bgm = BGM.EXCITING;
                             soundPlayer.Play();
                         }
@@ -578,6 +584,8 @@ namespace frogsoft_doudizhu
         private void ReturnMainButton_Click(object sender, RoutedEventArgs e) // 退出和返回大厅
         {
             QuitGame();
+            bgm = BGM.WELCOME;
+            soundPlayer.Play();
         }
 
         private void QuitGame() // 返回到游戏大厅
@@ -611,9 +619,6 @@ namespace frogsoft_doudizhu
                 OwnCardPanel_Upgrade();
                 ButtonPanel_Upgrade(NO_BUTTON);
             });
-            bgm = BGM.WELCOME;
-            soundPlayer.Source = new Uri(Environment.CurrentDirectory + @"\assets\sound\welcome.m4a");
-            soundPlayer.Play();
             ws.Close();
         }
 
