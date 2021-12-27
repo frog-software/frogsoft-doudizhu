@@ -96,7 +96,7 @@ namespace backend.GameService.com.frogsoft.doudizhu.Game
                     existingGame.CurrentPlayer = existingGame.GetLandlord().Id;
                 }
 
-                if(existingGame.HasGameStarted)
+                if(existingGame.IsLandlordDetermined())
                 {
                     foreach(var player in existingGame.Players)
                     {
