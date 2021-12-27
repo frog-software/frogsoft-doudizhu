@@ -407,10 +407,10 @@ namespace frogsoft_doudizhu
                         if (currentGame.CurrentPlayer == myself.Id) ownTextBlock.Visibility = Visibility.Hidden;
 
                         // 还未分出地主，并且到自己时
-                        if (currentGame.CurrentPlayer == myself.Id && !(myself.Status == PlayerStatus.LANDLORD || myself.Status == PlayerStatus.PEASANT))
+                        if (currentGame.CurrentPlayer == myself.Id && !(myself.Status == PlayerStatus.LANDLORD || myself.Status == PlayerStatus.PEASANT) && !isAddFinishImage)
                             ButtonPanel_Upgrade(BUTTON_ON_CALL);
                         // 已分出地主，并且到自己时
-                        else if (currentGame.CurrentPlayer == myself.Id && (myself.Status == PlayerStatus.LANDLORD || myself.Status == PlayerStatus.PEASANT))
+                        else if (currentGame.CurrentPlayer == myself.Id && (myself.Status == PlayerStatus.LANDLORD || myself.Status == PlayerStatus.PEASANT) && !isAddFinishImage)
                         {
                             ButtonPanel_Upgrade(BUTTON_ON_PLAY);
                             ownTextBlock.Visibility = Visibility.Collapsed;
@@ -453,6 +453,37 @@ namespace frogsoft_doudizhu
                         {
                             lordCardList = currentGame.list.GetRange(51, 3);
                             Call_Clear();
+
+                            var leftPlayerIdentityImage = new Image();
+                            leftPlayerIdentityImage.Width = leftPlayerIdentityImage.Height = 100;
+                            leftPlayerIdentityImage.Margin = new Thickness(120, 170, 0, 0);
+
+                            if (leftPlayer.Status == PlayerStatus.PEASANT)
+                                leftPlayerIdentityImage.Source = new BitmapImage(new Uri("/assets/images/others/peasant.png", UriKind.Relative));
+                            else
+                                leftPlayerIdentityImage.Source = new BitmapImage(new Uri("/assets/images/others/landlord.png", UriKind.Relative));
+
+                            var rightPlayerIdentityImage = new Image();
+                            rightPlayerIdentityImage.Width = rightPlayerIdentityImage.Height = 100;
+                            rightPlayerIdentityImage.Margin = new Thickness(1080, 170, 0, 0);
+
+                            if (rightPlayer.Status == PlayerStatus.PEASANT)
+                                rightPlayerIdentityImage.Source = new BitmapImage(new Uri("/assets/images/others/peasant.png", UriKind.Relative));
+                            else
+                                rightPlayerIdentityImage.Source = new BitmapImage(new Uri("/assets/images/others/landlord.png", UriKind.Relative));
+
+                            var myIdentityImage = new Image();
+                            myIdentityImage.Width = myIdentityImage.Height = 100;
+                            myIdentityImage.Margin = new Thickness(160, 500, 0, 0);
+
+                            if (myself.Status == PlayerStatus.PEASANT)
+                                myIdentityImage.Source = new BitmapImage(new Uri("/assets/images/others/peasant.png", UriKind.Relative));
+                            else
+                                myIdentityImage.Source = new BitmapImage(new Uri("/assets/images/others/landlord.png", UriKind.Relative));
+
+                            identityPanel.Children.Add(leftPlayerIdentityImage);
+                            identityPanel.Children.Add(rightPlayerIdentityImage);
+                            identityPanel.Children.Add(myIdentityImage);
                         }
                         // 还没分出地主，不揭开地主牌
                         else
@@ -597,13 +628,12 @@ namespace frogsoft_doudizhu
             currentGame = new GameModel();
             currentPlayer = new PlayerModel();
             lordCardList.Clear();
-            for (int i = 1; i <= 3; i++)
-                lordCardList.Add(54);
             ownCardList.Clear();
             leftPutCardList.Clear();
             rightPutCardList.Clear();
             selectCardList.Clear();
             ownPutCardList.Clear();
+            identityPanel.Children.Clear();
 
             gameGrid.Dispatcher.Invoke(() =>
             {

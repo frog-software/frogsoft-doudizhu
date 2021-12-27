@@ -81,7 +81,7 @@
         <Grid x:Name="gameGrid" Visibility="Collapsed">
             <TextBlock x:Name="ownCallTextBlock" Text="" Style="{StaticResource GeneralText}" Margin="585,170,585,0" />
             <TextBlock x:Name="leftCallTextBlock" Text="" Style="{StaticResource GeneralText}" Margin="215,200,955,464" Foreground="#FFEDD7BD" />
-            <TextBlock x:Name="rightCallTextBlock" Text="" Style="{StaticResource GeneralText}" Margin="695,200,67,464" Foreground="#FFEDD7BD" />
+            <TextBlock x:Name="rightCallTextBlock" Text="" Style="{StaticResource GeneralText}" Margin="815,200,67,464" Foreground="#FFEDD7BD" />
             
             <TextBlock x:Name="ownTextBlock" Text="不出" Style="{StaticResource GeneralText}" Margin="585,170,585,0" Visibility="Hidden"/>
             <TextBlock x:Name="leftTextBlock" Text="不出" Style="{StaticResource GeneralText}" Margin="215,200,955,464" Foreground="#FFEDD7BD" Visibility="Hidden"/>
@@ -112,6 +112,7 @@
 
             <StackPanel x:Name="gameFinishPanel" Orientation="Vertical" Visibility="Collapsed" />
 
+            <Canvas x:Name="identityPanel" Visibility="Visible" />
         </Grid>
     </Grid>
 
