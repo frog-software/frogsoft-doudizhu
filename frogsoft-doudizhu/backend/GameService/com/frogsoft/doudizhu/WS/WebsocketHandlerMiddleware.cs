@@ -167,6 +167,8 @@ namespace backend.GameService.com.frogsoft.doudizhu.WS
                             c.SendMessageAsync(JsonConvert.SerializeObject(GameCollection.GetGameByRoomNo(client.RoomNo)));
                         });
 
+                        _logger.LogInformation($"Sent message {GameCollection.GetGameByRoomNo(client.RoomNo)}");
+
                         break;
                     }
                 case MessageType.NEW_GAME:
