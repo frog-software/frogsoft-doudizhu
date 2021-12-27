@@ -9,17 +9,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="images\**" />
-    <Compile Remove="image\**" />
-    <EmbeddedResource Remove="images\**" />
-    <EmbeddedResource Remove="image\**" />
-    <None Remove="images\**" />
-    <None Remove="image\**" />
-    <Page Remove="images\**" />
-    <Page Remove="image\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="WebSocketSharp-netstandard" Version="1.0.1" />
   </ItemGroup>
@@ -82,7 +71,13 @@
     <Resource Include="assets\images\cards\8.png" />
     <Resource Include="assets\images\cards\9.png" />
     <Resource Include="assets\images\others\background.jpg" />
+    <Resource Include="assets\images\others\landlord.png" />
+    <Resource Include="assets\images\others\landlordlose.png" />
+    <Resource Include="assets\images\others\landlordwin.png" />
     <Resource Include="assets\images\others\logo.png" />
+    <Resource Include="assets\images\others\peasant.png" />
+    <Resource Include="assets\images\others\peasantlose.png" />
+    <Resource Include="assets\images\others\peasantwin.png" />
     <Resource Include="assets\images\others\title1.png" />
     <Resource Include="assets\images\others\title2.png" />
     <Resource Include="assets\images\others\title3.png" />
