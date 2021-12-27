@@ -17,6 +17,11 @@ namespace backend.GameService.com.frogsoft.doudizhu.WS
             _clients.Remove(client);
         }
 
+        public static void RemoveById(string websocketId)
+        {
+            _clients.RemoveAll(c=>c.Id==websocketId);
+        }
+
         public static WebsocketClient GetByClientId(string clientId)
         {
             var client = _clients.FirstOrDefault(c => c.Id == clientId);

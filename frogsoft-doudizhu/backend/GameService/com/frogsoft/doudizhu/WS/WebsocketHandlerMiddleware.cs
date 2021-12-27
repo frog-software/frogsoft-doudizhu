@@ -76,7 +76,7 @@ namespace backend.GameService.com.frogsoft.doudizhu.WS
                     var msgString = Encoding.UTF8.GetString(buffer);
                     _logger.LogInformation($"Websocket client ReceiveAsync message {msgString}.");
                     var message = JsonConvert.DeserializeObject<GameModel>(msgString);
-                  
+
                     message.CurrentPlayerConnectionId = webSocket.Id;
                     MessageRoute(message);
                 }
@@ -95,10 +95,10 @@ namespace backend.GameService.com.frogsoft.doudizhu.WS
             {
                 case MessageType.JOIN:
                     {
-                        
+
                         client.RoomNo = message.RoomNo;
                         _logger.LogInformation("[JOIN] Websocket client sent " + JsonConvert.SerializeObject(message));
-                        
+
                         if (!GameCollection.AddOrJoinGame(message.RoomNo, message.CurrentPlayer, message.CurrentPlayerConnectionId))
                         {
                             client.SendMessageAsync("{\"msg\": \"room full\"}");
@@ -112,9 +112,11 @@ namespace backend.GameService.com.frogsoft.doudizhu.WS
 
 
                         _logger.LogInformation($"Websocket client {message.CurrentPlayer} join room {client.RoomNo}.");
+
+                        _logger.LogInformation($"Server sent message {JsonConvert.SerializeObject(GameCollection.GetGameByRoomNo(client.RoomNo))}");
                         break;
                     }
-                    
+
                 case MessageType.UPDATE:
                     {
                         if (string.IsNullOrEmpty(client.RoomNo))
@@ -126,7 +128,7 @@ namespace backend.GameService.com.frogsoft.doudizhu.WS
 
                         GameCollection.UpdateGame(message);
 
-                       
+
 
                         var clients = WebsocketClientCollection.GetRoomClients(client.RoomNo);
                         clients.ForEach(c =>
@@ -135,39 +137,49 @@ namespace backend.GameService.com.frogsoft.doudizhu.WS
                         });
                         _logger.LogInformation($"Websocket client {message.CurrentPlayer} updated {client.RoomNo}");
 
+                        _logger.LogInformation($"Server sent message {JsonConvert.SerializeObject(GameCollection.GetGameByRoomNo(client.RoomNo))}");
+
                         break;
                     }
-                
+
                 case MessageType.LEAVE:
                     {
                         var roomNo = client.RoomNo;
                         client.RoomNo = "";
                         client.SendMessageAsync($"{{\"msg\": \"player {message.CurrentPlayer} leave room {roomNo} success.\"}}");
                         _logger.LogInformation($"Websocket client {message.CurrentPlayer} leave room {roomNo}");
-                        
+
                         var game = GameCollection.GetGameByRoomNo(roomNo);
+
+                        if (game == null)
+                        {
+                            break;
+                        }
 
                         game.EndGame(message.CurrentPlayerConnectionId);
 
                         game.Players.RemoveAll(p => p.ConnectionId == message.CurrentPlayerConnectionId);
 
-                        WebsocketClientCollection.Remove(client);
+                        WebsocketClientCollection.RemoveById(message.CurrentPlayerConnectionId);
 
                         _logger.LogInformation($"Room {roomNo} now has {game.Players.Count()} players");
 
-                        if (game.Players.Count() <= 0)
-                        {
-                            GameCollection.RemoveGame(roomNo);
-                            _logger.LogInformation($"Removed room {roomNo} beacause there is no players");
-                        }
 
-                        var clients = WebsocketClientCollection.GetRoomClients(message.RoomNo);
+
+                        var clients = WebsocketClientCollection.GetRoomClients(roomNo);
                         clients.ForEach(c =>
                         {
-                            c.SendMessageAsync(JsonConvert.SerializeObject(GameCollection.GetGameByRoomNo(client.RoomNo)));
+                            c.SendMessageAsync(JsonConvert.SerializeObject(GameCollection.GetGameByRoomNo(roomNo)));
                         });
 
-                        _logger.LogInformation($"Sent message {GameCollection.GetGameByRoomNo(client.RoomNo)}");
+                        _logger.LogInformation($"Server sent message {JsonConvert.SerializeObject(GameCollection.GetGameByRoomNo(roomNo))}");
+
+                        if (game.Players.Count() <= 2)
+                        {
+                            GameCollection.RemoveGame(roomNo);
+                            _logger.LogInformation($"Removed room {roomNo} beacause there is less than 3 players");
+                        }
+
 
                         break;
                     }

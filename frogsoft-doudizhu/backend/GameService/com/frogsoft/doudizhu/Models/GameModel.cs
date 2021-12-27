@@ -265,6 +265,8 @@
                     player.IsWin = WinStatus.WIN;
                 }
             }
+
+            this.HasGameStarted = true;
         }
 
     }
