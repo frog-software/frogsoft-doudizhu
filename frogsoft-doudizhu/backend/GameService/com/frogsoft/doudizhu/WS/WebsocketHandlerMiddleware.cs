@@ -99,7 +99,7 @@ namespace backend.GameService.com.frogsoft.doudizhu.WS
                         client.RoomNo = message.RoomNo;
                         _logger.LogInformation("[JOIN] Websocket client sent " + JsonConvert.SerializeObject(message));
                         
-                        if (!GameCollection.AddOrJoinGame(message.RoomNo, message.CurrentPlayer, client.Id))
+                        if (!GameCollection.AddOrJoinGame(message.RoomNo, message.CurrentPlayer, message.CurrentPlayerConnectionId))
                         {
                             client.SendMessageAsync("{\"msg\": \"room full\"}");
                         }
@@ -151,7 +151,9 @@ namespace backend.GameService.com.frogsoft.doudizhu.WS
 
                         game.Players.RemoveAll(p => p.ConnectionId == client.Id);
 
-                        if(game.Players.Count() <= 0)
+                        _logger.LogInformation($"Room {roomNo} now has {game.Players.Count()} players");
+
+                        if (game.Players.Count() <= 0)
                         {
                             GameCollection.RemoveGame(roomNo);
                             _logger.LogInformation($"Removed room {roomNo} beacause there is no players");
