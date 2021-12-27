@@ -15,21 +15,52 @@ using System.Windows.Shapes;
 using WebSocketSharp;
 using Newtonsoft.Json;
 using client.Models;
+using System.Media;
 
 namespace frogsoft_doudizhu
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
+    public enum BGM
+    {
+        NONE,
+        WELCOME,
+        NORMAL,
+        EXCITING
+    };
     public partial class MainWindow : Window
     {
         public MainWindow()
         {
             InitializeComponent();
-
             WebSocketInitialize();
+            soundPlayer.Source = new Uri(Environment.CurrentDirectory + @"\assets\sound\welcome.m4a");
+            bgm = BGM.WELCOME;
+            soundPlayer.Play();
         }
-
+        private BGM bgm
+        {
+            get
+            {
+                return bgm;
+            }
+            set
+            {
+                switch (value)
+                {
+                    case BGM.WELCOME:
+                        soundPlayer.Source = new Uri(Environment.CurrentDirectory + @"\assets\sound\welcome.m4a");
+                        break;
+                    case BGM.NORMAL:
+                        soundPlayer.Source = new Uri(Environment.CurrentDirectory + @"\assets\sound\normal.m4a");
+                        break;
+                    case BGM.EXCITING:
+                        soundPlayer.Source = new Uri(Environment.CurrentDirectory + @"\assets\sound\exciting.m4a");
+                        break;
+                }
+            }
+        }
         private const int NO_BUTTON = 0;        // 不显示按钮
         private const int BUTTON_ON_PLAY = 1;   // 打牌时的按钮
         private const int BUTTON_ON_CALL = 2;   // 叫分时的按钮
@@ -54,7 +85,7 @@ namespace frogsoft_doudizhu
         private PlayerModel currentPlayer = new PlayerModel();  // 存储固定的本地个人信息
         private GameModel currentGame = new GameModel();        // 存储本场游戏的信息
 
-        private bool isAuto = false;
+        private bool isAuto = false; // 是否开启托管
         private bool isAddFinishImage = false;
 
         private void LordCardPanel_Upgrade() // 更新地主牌动画
@@ -187,6 +218,10 @@ namespace frogsoft_doudizhu
 
         private void SkipCardButton_Click(object sender, RoutedEventArgs e) // 不出
         {
+            ownTextBlock.Visibility = Visibility.Visible;
+            MediaPlayer mediaPlayer = new MediaPlayer();
+            mediaPlayer.Open(new Uri(Environment.CurrentDirectory + @"/assets/sound/yaobuqi.wav"));
+            mediaPlayer.Play();
             selectCardList.Clear();
             foreach (var i in ownCardPanel.Children)
             {
@@ -233,6 +268,10 @@ namespace frogsoft_doudizhu
 
         private void StartGame_Click(object sender, RoutedEventArgs e) // 开始匹配
         {
+            soundPlayer.Stop();
+
+            bgm = BGM.NORMAL;
+            soundPlayer.Play();
             ws.Connect();
         }
 
@@ -304,7 +343,7 @@ namespace frogsoft_doudizhu
                 Random random = new Random();
                 currentPlayer.Id = "user" + random.Next(1000).ToString();
                 currentGame.CurrentPlayer = currentPlayer.Id;
-                currentGame.RoomNo = "6";
+                currentGame.RoomNo = "1";
                 currentGame.MessageType = MessageType.JOIN;
 
                 ws.Send(JsonConvert.SerializeObject(currentGame));
@@ -356,6 +395,10 @@ namespace frogsoft_doudizhu
                     {
                         skipCardButton.Visibility = Visibility.Visible;
 
+                        if (currentGame.CurrentPlayer == leftPlayer.Id) leftTextBlock.Visibility = Visibility.Hidden;
+                        if (currentGame.CurrentPlayer == rightPlayer.Id) rightTextBlock.Visibility = Visibility.Hidden;
+                        if (currentGame.CurrentPlayer == myself.Id) ownTextBlock.Visibility = Visibility.Hidden;
+
                         // 还未分出地主，并且到自己时
                         if (currentGame.CurrentPlayer == myself.Id && !(myself.Status == PlayerStatus.LANDLORD || myself.Status == PlayerStatus.PEASANT))
                             ButtonPanel_Upgrade(BUTTON_ON_CALL);
@@ -363,6 +406,7 @@ namespace frogsoft_doudizhu
                         else if (currentGame.CurrentPlayer == myself.Id && (myself.Status == PlayerStatus.LANDLORD || myself.Status == PlayerStatus.PEASANT))
                         {
                             ButtonPanel_Upgrade(BUTTON_ON_PLAY);
+                            ownTextBlock.Visibility = Visibility.Collapsed;
 
                             if (leftPlayer.CardsOut.Count == 0 && rightPlayer.CardsOut.Count == 0)
                                 skipCardButton.Visibility = Visibility.Hidden;
@@ -395,7 +439,7 @@ namespace frogsoft_doudizhu
                         // 无论分没分出地主，并且没到自己时
                         else
                             ButtonPanel_Upgrade(NO_BUTTON);
-                            
+
 
                         // 已分出地主，揭开地主牌
                         if (myself.Status == PlayerStatus.LANDLORD || myself.Status == PlayerStatus.PEASANT)
@@ -416,7 +460,7 @@ namespace frogsoft_doudizhu
                         }
 
 
-                        
+
                         // 分出胜负
                         if (myself.IsWin != WinStatus.UNDEF && !isAddFinishImage)
                         {
@@ -444,6 +488,13 @@ namespace frogsoft_doudizhu
                             else if (myself.IsWin == WinStatus.WIN && myself.Status == PlayerStatus.PEASANT)
                                 image.Source = new BitmapImage(new Uri("/assets/images/others/peasantwin.png", UriKind.Relative));
 
+                            soundPlayer.Stop();
+                            MediaPlayer mediaPlayer = new MediaPlayer();
+                            if (myself.IsWin == WinStatus.WIN)
+                                mediaPlayer.Open(new Uri(Environment.CurrentDirectory + @"/assets/sound/win.wav"));
+                            else mediaPlayer.Open(new Uri(Environment.CurrentDirectory + @"/assets/sound/lose.wav"));
+                            mediaPlayer.Play();
+
                             gameFinishPanel.Children.Add(image);
                             gameFinishPanel.Children.Add(button);
                             gameFinishPanel.Visibility = Visibility.Visible;
@@ -452,6 +503,28 @@ namespace frogsoft_doudizhu
                             isAddFinishImage = true;
                         }
 
+                        if ((leftPlayer.CardsInHand.Count <= 5 || rightPlayer.CardsInHand.Count <= 5 || myself.CardsInHand.Count <= 5)
+                        && bgm != BGM.EXCITING)
+                        {
+                            soundPlayer.Stop();
+
+                            bgm = BGM.EXCITING;
+                            soundPlayer.Play();
+                        }
+                        if (leftPlayer.IsNotOut == true)
+                        {
+                            leftTextBlock.Visibility = Visibility.Visible;
+                            MediaPlayer mediaPlayer = new MediaPlayer();
+                            mediaPlayer.Open(new Uri(Environment.CurrentDirectory + @"/assets/sound/yaobuqi.wav"));
+                            mediaPlayer.Play();
+                        }
+                        if (rightPlayer.IsNotOut == true)
+                        {
+                            rightTextBlock.Visibility = Visibility.Visible;
+                            MediaPlayer mediaPlayer = new MediaPlayer();
+                            mediaPlayer.Open(new Uri(Environment.CurrentDirectory + @"/assets/sound/yaobuqi.wav"));
+                            mediaPlayer.Play();
+                        }
                         LordCardPanel_Upgrade();
                         LeftPutCardPanel_Upgrade();
                         RightPutCardPanel_Upgrade();
@@ -510,7 +583,7 @@ namespace frogsoft_doudizhu
         private void QuitGame() // 返回到游戏大厅
         {
             currentGame.MessageType = MessageType.LEAVE;
-            if (currentGame != null)
+            if (ws.IsAlive == true && currentGame != null)
                 ws.Send(JsonConvert.SerializeObject(currentGame));
 
             currentGame = new GameModel();
@@ -538,17 +611,28 @@ namespace frogsoft_doudizhu
                 OwnCardPanel_Upgrade();
                 ButtonPanel_Upgrade(NO_BUTTON);
             });
-
+            bgm = BGM.WELCOME;
+            soundPlayer.Source = new Uri(Environment.CurrentDirectory + @"\assets\sound\welcome.m4a");
+            soundPlayer.Play();
             ws.Close();
         }
 
         private void window_Closed(object sender, EventArgs e)
         {
+            soundPlayer.Stop();
+            soundPlayer.Close();
             currentGame.MessageType = MessageType.LEAVE;
-            if (currentGame != null)
-                ws.Send(JsonConvert.SerializeObject(currentGame));
 
+            if (ws.IsAlive == true && currentGame != null)
+                ws.Send(JsonConvert.SerializeObject(currentGame));
             ws.Close();
+
+        }
+
+        private void soundPlayer_MediaEnded(object sender, RoutedEventArgs e)
+        {
+            soundPlayer.Stop();
+            soundPlayer.Play();
         }
     }
 }
