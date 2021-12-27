@@ -12,6 +12,10 @@
         //public string Avatar = "";
         public int CallScore = -1;
 
+        public WinStatus IsWin = WinStatus.UNDEF;
+
+        public int Passed = 0;
+
         
         public bool Move(List<int> combination)
         {
@@ -34,5 +38,12 @@
         READY,
         LANDLORD,
         PEASANT
+    }
+
+    public enum WinStatus
+    {
+        WIN,
+        LOSE,
+        UNDEF
     }
 }

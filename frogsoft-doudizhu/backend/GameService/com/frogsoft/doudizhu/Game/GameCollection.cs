@@ -52,7 +52,7 @@ namespace backend.GameService.com.frogsoft.doudizhu.Game
 
             playerInExistingGame.CopyFrom(playerInRemoteGame);
 
-
+            playerInExistingGame.Passed++;
 
             // the remote current player will soon be the last
             if (playerInRemoteGame.CardsOut.Count > 0)
@@ -65,8 +65,6 @@ namespace backend.GameService.com.frogsoft.doudizhu.Game
                 }
             }
            
-
-
 
 
             if (playerInRemoteGame.CardsOut.Count > 0)
@@ -104,6 +102,8 @@ namespace backend.GameService.com.frogsoft.doudizhu.Game
                 existingGame.Players[1].CardsOut = new List<int>();
                 existingGame.Players[2].CardsOut = new List<int>();
             }
+
+            existingGame.CheckEndOfGame();
 
 
             return true;
