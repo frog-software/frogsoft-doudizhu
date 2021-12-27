@@ -255,6 +255,17 @@
             return;
         }
 
+        public void EndGame(string leftUserConnId)
+        {
+            foreach (PlayerModel player in Players)
+            {
+                if (player.ConnectionId != leftUserConnId)
+                {
+                    player.IsWin = WinStatus.WIN;
+                }
+            }
+        }
+
     }
 
     public enum MessageType

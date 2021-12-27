@@ -16,6 +16,8 @@
 
         public int Passed = 0;
 
+        public string ConnectionId { get; set; }
+
         
         public bool Move(List<int> combination)
         {
