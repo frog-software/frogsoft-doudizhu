@@ -31,6 +31,7 @@
             this.CardsInHand = from.CardsInHand;
             this.CardsOut = from.CardsOut;
             this.CallScore = from.CallScore;
+            this.ConnectionId = from.ConnectionId;
         }
     }
 
