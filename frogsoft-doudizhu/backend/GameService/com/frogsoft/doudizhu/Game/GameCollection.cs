@@ -103,7 +103,11 @@ namespace backend.GameService.com.frogsoft.doudizhu.Game
                 existingGame.Players[2].CardsOut = new List<int>();
             }
 
-            existingGame.CheckEndOfGame();
+            if (existingGame.HasGameStarted)
+            {
+                existingGame.CheckEndOfGame();
+            }
+            
 
 
             return true;
