@@ -20,6 +20,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="assets\sound\exciting.mp3" />
+    <None Remove="assets\sound\normal.mp3" />
+    <None Remove="assets\sound\welcome.mp3" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="WebSocketSharp-netstandard" Version="1.0.1" />
   </ItemGroup>
@@ -92,17 +98,17 @@
     <Resource Include="assets\images\others\title1.png" />
     <Resource Include="assets\images\others\title2.png" />
     <Resource Include="assets\images\others\title3.png" />
-    <EmbeddedResource Include="assets\sound\exciting.m4a">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <EmbeddedResource Include="assets\sound\exciting.mp3">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="assets\sound\lose.wav">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="assets\sound\normal.m4a">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <EmbeddedResource Include="assets\sound\normal.mp3">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="assets\sound\welcome.m4a">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <EmbeddedResource Include="assets\sound\welcome.mp3">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="assets\sound\win.wav">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

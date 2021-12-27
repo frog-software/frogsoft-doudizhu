@@ -35,7 +35,6 @@ namespace frogsoft_doudizhu
         {
             InitializeComponent();
             WebSocketInitialize();
-            soundPlayer.Source = new Uri(Environment.CurrentDirectory + @"\assets\sound\welcome.m4a");
             bgm = BGM.WELCOME;
             soundPlayer.Play();
         }
@@ -54,15 +53,15 @@ namespace frogsoft_doudizhu
                     {
                         case BGM.WELCOME:
                             _bgm = value;
-                            soundPlayer.Source = new Uri(Environment.CurrentDirectory + @"\assets\sound\welcome.m4a");
+                            soundPlayer.Source = new Uri(Environment.CurrentDirectory + @"\assets\sound\welcome.mp3");
                             break;
                         case BGM.NORMAL:
                             _bgm = value;
-                            soundPlayer.Source = new Uri(Environment.CurrentDirectory + @"\assets\sound\normal.m4a");
+                            soundPlayer.Source = new Uri(Environment.CurrentDirectory + @"\assets\sound\normal.mp3");
                             break;
                         case BGM.EXCITING:
                             _bgm = value;
-                            soundPlayer.Source = new Uri(Environment.CurrentDirectory + @"\assets\sound\exciting.m4a");
+                            soundPlayer.Source = new Uri(Environment.CurrentDirectory + @"\assets\sound\exciting.mp3");
                             break;
                     }
                 }));
@@ -87,7 +86,7 @@ namespace frogsoft_doudizhu
 
         private List<string> playerText = new List<string> { "", "不叫", "一分", "两分", "三分", "不出" };
 
-        private WebSocket ws = new WebSocket("ws://localhost:5174/api/games/com/frogsoft/doudizhu/room");
+        private WebSocket ws = new WebSocket("ws://192.168.5.92:5174/api/games/com/frogsoft/doudizhu/room");
 
         private PlayerModel currentPlayer = new PlayerModel();  // 存储固定的本地个人信息
         private GameModel currentGame = new GameModel();        // 存储本场游戏的信息
@@ -161,7 +160,11 @@ namespace frogsoft_doudizhu
                 image.Name = "card" + card.ToString();
                 image.Width = 105;
                 image.Height = 140;
-                image.Margin = new Thickness { Left = -70, Bottom = CARD_DESELECT_MARGIN };
+                if (selectCardList.Contains(card))
+                    image.Margin = new Thickness { Left = -70, Bottom = CARD_SELECT_MARGIN };
+                else
+                    image.Margin = new Thickness { Left = -70, Bottom = CARD_DESELECT_MARGIN };
+
                 image.MouseLeftButtonUp += CardImage_Click;
 
                 ownCardPanel.Children.Add(image);
