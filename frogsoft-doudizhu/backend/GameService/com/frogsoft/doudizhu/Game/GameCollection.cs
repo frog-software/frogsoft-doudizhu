@@ -84,6 +84,21 @@ namespace backend.GameService.com.frogsoft.doudizhu.Game
                 // move to next player
                 existingGame.CurrentPlayer = existingGame.GetNextPlayerById(playerInExistingGame.Id).Id;
 
+                if (existingGame.IsLandlordDetermined())
+                {
+                    foreach (var player in existingGame.Players)
+                    {
+                        if (player.Id == playerInExistingGame.Id && playerInExistingGame.CardsOut.Count <= 0)
+                        {
+                            player.IsNotOut = true;
+                        }
+                        else
+                        {
+                            player.IsNotOut = false;
+                        }
+                    }
+                }
+
                 if (existingGame.IsPlayerAllNoCards())
                 {
                     existingGame.AssignCards();
@@ -96,20 +111,7 @@ namespace backend.GameService.com.frogsoft.doudizhu.Game
                     existingGame.CurrentPlayer = existingGame.GetLandlord().Id;
                 }
 
-                if(existingGame.IsLandlordDetermined())
-                {
-                    foreach(var player in existingGame.Players)
-                    {
-                        if(player.Id == playerInExistingGame.Id && playerInExistingGame.CardsOut.Count<=0)
-                        {
-                            player.IsNotOut = true;
-                        }
-                        else
-                        {
-                            player.IsNotOut = false;    
-                        }
-                    }
-                }
+                
             }
 
             if (existingGame.LastPlayer == existingGame.CurrentPlayer &&
