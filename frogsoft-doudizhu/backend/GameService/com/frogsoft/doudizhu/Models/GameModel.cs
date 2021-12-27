@@ -22,7 +22,7 @@
         public bool HasGameStarted {  get; set; } = false;
 
 
-        public bool AddPlayer(string playerId)
+        public bool AddPlayer(string playerId, string connId)
         {
             var existingPlayer = Players.FirstOrDefault(p => p.Id == playerId);
             if (existingPlayer != null)
@@ -32,6 +32,7 @@
 
             var newPlayer = new PlayerModel();
             newPlayer.Id = playerId;
+            newPlayer.ConnectionId = connId;
 
             Players.Add(newPlayer);
 

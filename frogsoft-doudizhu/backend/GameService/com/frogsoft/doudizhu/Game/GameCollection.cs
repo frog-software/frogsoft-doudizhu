@@ -6,7 +6,7 @@ namespace backend.GameService.com.frogsoft.doudizhu.Game
     {
         public static List<GameModel> Games = new List<GameModel>();
 
-        public static bool AddOrJoinGame(string roomNo, string currentPlayer)
+        public static bool AddOrJoinGame(string roomNo, string currentPlayer, string connId)
         {
             var existingGame = GetGameByRoomNo(roomNo);
 
@@ -16,7 +16,7 @@ namespace backend.GameService.com.frogsoft.doudizhu.Game
                 {
                     return false;
                 }
-                existingGame.AddPlayer(currentPlayer);
+                existingGame.AddPlayer(currentPlayer, connId);
                 Console.WriteLine("Added player " + currentPlayer + " to room " + roomNo);
 
                 return true;
@@ -24,7 +24,7 @@ namespace backend.GameService.com.frogsoft.doudizhu.Game
 
             var game = new GameModel();
             game.RoomNo = roomNo;
-            game.AddPlayer(currentPlayer);
+            game.AddPlayer(currentPlayer, connId);
             Games.Add(game);
 
             Console.WriteLine("Created room " + roomNo);

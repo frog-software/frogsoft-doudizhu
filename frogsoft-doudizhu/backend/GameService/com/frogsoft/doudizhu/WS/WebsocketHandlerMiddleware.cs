@@ -98,8 +98,8 @@ namespace backend.GameService.com.frogsoft.doudizhu.WS
                         
                         client.RoomNo = message.RoomNo;
                         _logger.LogInformation("[JOIN] Websocket client sent " + JsonConvert.SerializeObject(message));
-                        message.CurrentPlayerConnectionId = client.Id;
-                        if (!GameCollection.AddOrJoinGame(message.RoomNo, message.CurrentPlayer))
+                        
+                        if (!GameCollection.AddOrJoinGame(message.RoomNo, message.CurrentPlayer, client.Id))
                         {
                             client.SendMessageAsync("{\"msg\": \"room full\"}");
                         }
