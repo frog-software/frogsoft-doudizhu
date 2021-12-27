@@ -8,10 +8,10 @@
         Title="MainWindow" 
         Height="720" Width="1280" MinWidth="1280" MinHeight="720" MaxWidth="1280" MaxHeight="720" 
         WindowChrome.WindowChrome="{DynamicResource WindowChromeKey}" AllowsTransparency="True" WindowStyle="None" ResizeMode="NoResize" WindowState="Maximized"
-        WindowStartupLocation="CenterScreen">
+        WindowStartupLocation="CenterScreen" Closed="window_Closed">
 
     <Window.Background>
-        <ImageBrush ImageSource="/images/others/background.jpg"/>
+        <ImageBrush ImageSource="/assets/images/others/background.jpg"/>
     </Window.Background>
 
     <Window.Resources>
@@ -63,12 +63,12 @@
 
     <Grid>
         <Grid x:Name="logoGrid" Background="#FFFFFF" Visibility="Collapsed">
-            <Image Source="/images/others/title1.png" Margin="381,132,89,132" />
-            <Image Source="/images/others/logo.png" Margin="76,212,922,232" />
+            <Image Source="/assets/images/others/title1.png" Margin="381,132,89,132" />
+            <Image Source="/assets/images/others/logo.png" Margin="76,212,922,232" />
         </Grid>
 
         <Grid x:Name="mainGrid" Visibility="Visible" >
-            <Image Source="/images/others/title3.png" Margin="211,52,211,340" />
+            <Image Source="/assets/images/others/title3.png" Margin="211,52,211,340" />
 
             <StackPanel x:Name="mainPanel">
                 <Button x:Name="startGame" Content="开始匹配" Width="280" Height="50" Margin="0, 460, 0, 0" Style="{StaticResource GeneralButton}" Click="StartGame_Click" />
@@ -76,7 +76,7 @@
             </StackPanel>
         </Grid>
 
-        <Grid x:Name="gameGrid" Visibility="Visible">
+        <Grid x:Name="gameGrid" Visibility="Collapsed">
             <TextBlock x:Name="ownCallTextBlock" Text="" Style="{StaticResource GeneralText}" Margin="585,170,585,0" />
             <TextBlock x:Name="leftCallTextBlock" Text="" Style="{StaticResource GeneralText}" Margin="215,200,955,464" Foreground="#FFEDD7BD" />
             <TextBlock x:Name="rightCallTextBlock" Text="" Style="{StaticResource GeneralText}" Margin="695,200,67,464" Foreground="#FFEDD7BD" />
@@ -98,7 +98,8 @@
                 <Button x:Name="putCardButton" Content="出牌" Width="120" Height="50" Margin="100,0,0,165" Style="{StaticResource GeneralButton}" Click="PutCardButton_Click" />
             </StackPanel>
 
-            <Button x:Name="autoPlayButton" Content="托管" Width="160" Height="50" Margin="1060,600,0,0" Style="{StaticResource GeneralButton}" Click="AutoPlayButton_Click" Visibility="Collapsed"/>
+            <Button x:Name="autoPlayButton" Content="托管" Width="160" Height="50" Margin="1060,600,0,0" Style="{StaticResource GeneralButton}" Click="AutoPlayButton_Click" Visibility="Visible"/>
+            <Button x:Name="quitGameButton"  Content="退出" Width="160" Height="50" Margin="0,600,1060,0" Style="{StaticResource GeneralButton}" Click="ReturnMainButton_Click" Visibility="Visible"/>
 
             <StackPanel x:Name="buttonPanelOnCall" Margin="0,350,0,200" Orientation="Horizontal" Visibility="Collapsed">
                 <Button x:Name="callNo" Content="不叫" Width="120" Height="50" Margin="280,35,0,0" Style="{StaticResource GeneralButton}" Click="CallNo_Click" />
@@ -106,8 +107,9 @@
                 <Button x:Name="callTwo" Content="两分" Width="120" Height="50" Margin="80,35,0,0" Style="{StaticResource GeneralButton}" Click="CallTwo_Click" />
                 <Button x:Name="callThree" Content="三分" Width="120" Height="50" Margin="80,35,0,0" Style="{StaticResource GeneralButton}" Click="CallThree_Click" />
             </StackPanel>
-            
-            
+
+            <StackPanel x:Name="gameFinishPanel" Orientation="Vertical" Visibility="Collapsed" />
+
         </Grid>
     </Grid>
 

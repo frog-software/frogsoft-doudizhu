@@ -21,6 +21,8 @@ namespace client.Models
         public WinStatus IsWin = WinStatus.UNDEF;
 
         public int Passed = 0;
+
+        public string ConnectionId { get; set; }
     }
 
     public enum PlayerStatus

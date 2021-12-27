@@ -37,7 +37,7 @@ namespace frogsoft_doudizhu
         private const int CARD_DESELECT_MARGIN = -80;   // 不被选中的牌
         private const int CARD_SELECT_MARGIN = -20;     // 被选中的牌
 
-        private List<int> lordCardList = new List<int> { 54, 54, 54 };  // 地主牌
+        private List<int> lordCardList = new List<int> { };  // 地主牌
 
         private List<int> ownCardList = new List<int> { }; // 自己手上的牌
 
@@ -55,6 +55,7 @@ namespace frogsoft_doudizhu
         private GameModel currentGame = new GameModel();        // 存储本场游戏的信息
 
         private bool isAuto = false;
+        private bool isAddFinishImage = false;
 
         private void LordCardPanel_Upgrade() // 更新地主牌动画
         {
@@ -82,7 +83,7 @@ namespace frogsoft_doudizhu
             foreach (int card in cardList)
             {
                 Image image = new Image();
-                image.Source = new BitmapImage(new Uri("/images/cards/" + card.ToString() + ".png", UriKind.Relative));
+                image.Source = new BitmapImage(new Uri("/assets/images/cards/" + card.ToString() + ".png", UriKind.Relative));
                 image.Name = "card" + card.ToString();
                 image.Width = 70;
                 image.Height = 105;
@@ -117,7 +118,7 @@ namespace frogsoft_doudizhu
             foreach (int card in ownCardList)
             {
                 Image image = new Image();
-                image.Source = new BitmapImage(new Uri("/images/cards/" + card.ToString() + ".png", UriKind.Relative));
+                image.Source = new BitmapImage(new Uri("/assets/images/cards/" + card.ToString() + ".png", UriKind.Relative));
 
                 image.Name = "card" + card.ToString();
                 image.Width = 105;
@@ -303,7 +304,7 @@ namespace frogsoft_doudizhu
                 Random random = new Random();
                 currentPlayer.Id = "user" + random.Next(1000).ToString();
                 currentGame.CurrentPlayer = currentPlayer.Id;
-                currentGame.RoomNo = "1";
+                currentGame.RoomNo = "6";
                 currentGame.MessageType = MessageType.JOIN;
 
                 ws.Send(JsonConvert.SerializeObject(currentGame));
@@ -315,8 +316,15 @@ namespace frogsoft_doudizhu
             {
                 // 本场游戏
                 currentGame = JsonConvert.DeserializeObject<GameModel>(e.Data);
+                if (currentGame == null || (currentGame.Players.Count <= 2 && currentGame.HasGameStarted))
+                {
+                    QuitGame();
+                    return;
+                }
+
                 // 动态的个人信息
                 var myself = currentGame.GetPlayerById(currentPlayer.Id);
+                if (myself == null) return;
 
                 if (currentGame.list.Count == 0) // 进入房间
                 {
@@ -407,7 +415,42 @@ namespace frogsoft_doudizhu
                             rightCallTextBlock.Text = playerText[rightPlayer.CallScore + 1];
                         }
 
+
                         
+                        // 分出胜负
+                        if (myself.IsWin != WinStatus.UNDEF && !isAddFinishImage)
+                        {
+                            isAuto = false;
+                            autoPlayButton.Visibility = Visibility.Hidden;
+
+                            var image = new Image();
+                            image.Height = 280;
+                            image.Width = 600;
+                            image.Margin = new Thickness { Top = 120, Bottom = 50 };
+
+                            var button = new Button();
+                            button.Content = "返回大厅";
+                            button.Width = 280;
+                            button.Height = 50;
+                            button.Style = (Style)this.Resources["GeneralButton"];
+                            button.Click += ReturnMainButton_Click;
+
+                            if (myself.IsWin == WinStatus.LOSE && myself.Status == PlayerStatus.LANDLORD)
+                                image.Source = new BitmapImage(new Uri("/assets/images/others/landlordlose.png", UriKind.Relative));
+                            else if (myself.IsWin == WinStatus.WIN && myself.Status == PlayerStatus.LANDLORD)
+                                image.Source = new BitmapImage(new Uri("/assets/images/others/landlordwin.png", UriKind.Relative));
+                            else if (myself.IsWin == WinStatus.LOSE && myself.Status == PlayerStatus.PEASANT)
+                                image.Source = new BitmapImage(new Uri("/assets/images/others/peasantlose.png", UriKind.Relative));
+                            else if (myself.IsWin == WinStatus.WIN && myself.Status == PlayerStatus.PEASANT)
+                                image.Source = new BitmapImage(new Uri("/assets/images/others/peasantwin.png", UriKind.Relative));
+
+                            gameFinishPanel.Children.Add(image);
+                            gameFinishPanel.Children.Add(button);
+                            gameFinishPanel.Visibility = Visibility.Visible;
+
+                            ButtonPanel_Upgrade(NO_BUTTON);
+                            isAddFinishImage = true;
+                        }
 
                         LordCardPanel_Upgrade();
                         LeftPutCardPanel_Upgrade();
@@ -424,7 +467,7 @@ namespace frogsoft_doudizhu
             };
         }
 
-        private async void AutoPlayButton_Click(object sender, RoutedEventArgs e)
+        private async void AutoPlayButton_Click(object sender, RoutedEventArgs e) // 托管
         {
             isAuto = !isAuto;
 
@@ -457,6 +500,55 @@ namespace frogsoft_doudizhu
             // 非托管状态
             else
                 autoPlayButton.Content = "托管";
+        }
+
+        private void ReturnMainButton_Click(object sender, RoutedEventArgs e) // 退出和返回大厅
+        {
+            QuitGame();
+        }
+
+        private void QuitGame() // 返回到游戏大厅
+        {
+            currentGame.MessageType = MessageType.LEAVE;
+            if (currentGame != null)
+                ws.Send(JsonConvert.SerializeObject(currentGame));
+
+            currentGame = new GameModel();
+            currentPlayer = new PlayerModel();
+            lordCardList.Clear();
+            for (int i = 1; i <= 3; i++)
+                lordCardList.Add(54);
+            ownCardList.Clear();
+            leftPutCardList.Clear();
+            rightPutCardList.Clear();
+            selectCardList.Clear();
+            ownPutCardList.Clear();
+
+            gameGrid.Dispatcher.Invoke(() =>
+            {
+                autoPlayButton.Visibility = Visibility.Collapsed;
+                quitGameButton.Visibility = Visibility.Collapsed;
+                gameFinishPanel.Visibility = Visibility.Collapsed;
+                gameGrid.Visibility = Visibility.Collapsed;
+                mainGrid.Visibility = Visibility.Visible;
+
+                LordCardPanel_Upgrade();
+                LeftPutCardPanel_Upgrade();
+                RightPutCardPanel_Upgrade();
+                OwnCardPanel_Upgrade();
+                ButtonPanel_Upgrade(NO_BUTTON);
+            });
+
+            ws.Close();
+        }
+
+        private void window_Closed(object sender, EventArgs e)
+        {
+            currentGame.MessageType = MessageType.LEAVE;
+            if (currentGame != null)
+                ws.Send(JsonConvert.SerializeObject(currentGame));
+
+            ws.Close();
         }
     }
 }
