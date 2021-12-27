@@ -95,6 +95,21 @@ namespace backend.GameService.com.frogsoft.doudizhu.Game
                     existingGame.AssignLandlordCards();
                     existingGame.CurrentPlayer = existingGame.GetLandlord().Id;
                 }
+
+                if(existingGame.HasGameStarted)
+                {
+                    foreach(var player in existingGame.Players)
+                    {
+                        if(player.Id == playerInExistingGame.Id && playerInExistingGame.CardsOut.Count<=0)
+                        {
+                            player.IsNotOut = true;
+                        }
+                        else
+                        {
+                            player.IsNotOut = false;    
+                        }
+                    }
+                }
             }
 
             if (existingGame.LastPlayer == existingGame.CurrentPlayer &&

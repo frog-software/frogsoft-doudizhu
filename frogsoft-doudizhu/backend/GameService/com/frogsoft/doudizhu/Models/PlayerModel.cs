@@ -16,6 +16,8 @@
 
         public int Passed = 0;
 
+        public bool IsNotOut = false;
+
         public string ConnectionId { get; set; }
 
         
