@@ -151,6 +151,8 @@ namespace backend.GameService.com.frogsoft.doudizhu.WS
 
                         game.Players.RemoveAll(p => p.ConnectionId == message.CurrentPlayerConnectionId);
 
+                        WebsocketClientCollection.Remove(client);
+
                         _logger.LogInformation($"Room {roomNo} now has {game.Players.Count()} players");
 
                         if (game.Players.Count() <= 0)
