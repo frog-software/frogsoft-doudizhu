@@ -223,12 +223,45 @@
             return false;
         }
 
+        public void CheckEndOfGame()
+        {
+            PlayerModel playerWithNoCards = null;
+
+            foreach (PlayerModel player in Players)
+            {
+                if (player.CardsInHand.Count <= 0)
+                {
+                    playerWithNoCards = player;
+                }
+            }
+
+            if (playerWithNoCards == null)
+            {
+                return;
+            }
+
+            foreach (PlayerModel player in Players)
+            {
+                if (player.Status == playerWithNoCards.Status)
+                {
+                    player.IsWin = WinStatus.WIN;
+                }
+                else
+                {
+                    player.IsWin = WinStatus.LOSE;
+                }
+            }
+
+            return;
+        }
+
     }
 
     public enum MessageType
     {
         JOIN,
         LEAVE,
-        UPDATE
+        UPDATE,
+        NEW_GAME
     }
 }

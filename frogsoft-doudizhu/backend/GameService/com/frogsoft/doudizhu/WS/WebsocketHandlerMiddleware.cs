@@ -125,6 +125,8 @@ namespace backend.GameService.com.frogsoft.doudizhu.WS
 
                         GameCollection.UpdateGame(message);
 
+                       
+
                         var clients = WebsocketClientCollection.GetRoomClients(client.RoomNo);
                         clients.ForEach(c =>
                         {
@@ -151,7 +153,11 @@ namespace backend.GameService.com.frogsoft.doudizhu.WS
                         
                         break;
                     }
-                  
+                case MessageType.NEW_GAME:
+                    {
+
+                        break;
+                    }
                 default:
                     break;
             }
