@@ -158,7 +158,13 @@ namespace backend.GameService.com.frogsoft.doudizhu.WS
                             GameCollection.RemoveGame(roomNo);
                             _logger.LogInformation($"Removed room {roomNo} beacause there is no players");
                         }
-                        
+
+                        var clients = WebsocketClientCollection.GetRoomClients(message.RoomNo);
+                        clients.ForEach(c =>
+                        {
+                            c.SendMessageAsync(JsonConvert.SerializeObject(GameCollection.GetGameByRoomNo(client.RoomNo)));
+                        });
+
                         break;
                     }
                 case MessageType.NEW_GAME:
