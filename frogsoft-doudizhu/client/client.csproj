@@ -9,6 +9,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="images\**" />
+    <Compile Remove="image\**" />
+    <EmbeddedResource Remove="images\**" />
+    <EmbeddedResource Remove="image\**" />
+    <None Remove="images\**" />
+    <None Remove="image\**" />
+    <Page Remove="images\**" />
+    <Page Remove="image\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="WebSocketSharp-netstandard" Version="1.0.1" />
   </ItemGroup>
@@ -81,6 +92,24 @@
     <Resource Include="assets\images\others\title1.png" />
     <Resource Include="assets\images\others\title2.png" />
     <Resource Include="assets\images\others\title3.png" />
+    <EmbeddedResource Include="assets\sound\exciting.m4a">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="assets\sound\lose.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="assets\sound\normal.m4a">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="assets\sound\welcome.m4a">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="assets\sound\win.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="assets\sound\yaobuqi.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>

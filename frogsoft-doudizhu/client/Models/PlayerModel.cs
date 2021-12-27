@@ -23,6 +23,9 @@ namespace client.Models
         public int Passed = 0;
 
         public string ConnectionId { get; set; }
+
+        public bool IsNotOut = false;
+
     }
 
     public enum PlayerStatus

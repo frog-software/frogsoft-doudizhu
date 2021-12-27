@@ -62,6 +62,8 @@
     </Window.Resources>
 
     <Grid>
+        <MediaElement Name="soundPlayer" LoadedBehavior="Manual" MediaEnded="soundPlayer_MediaEnded"/> 
+        
         <Grid x:Name="logoGrid" Background="#FFFFFF" Visibility="Collapsed">
             <Image Source="/assets/images/others/title1.png" Margin="381,132,89,132" />
             <Image Source="/assets/images/others/logo.png" Margin="76,212,922,232" />
@@ -81,9 +83,9 @@
             <TextBlock x:Name="leftCallTextBlock" Text="" Style="{StaticResource GeneralText}" Margin="215,200,955,464" Foreground="#FFEDD7BD" />
             <TextBlock x:Name="rightCallTextBlock" Text="" Style="{StaticResource GeneralText}" Margin="695,200,67,464" Foreground="#FFEDD7BD" />
             
-            <TextBlock x:Name="ownTextBlock" Text="" Style="{StaticResource GeneralText}" Margin="585,170,585,0" />
-            <TextBlock x:Name="leftTextBlock" Text="" Style="{StaticResource GeneralText}" Margin="215,200,955,464" Foreground="#FFEDD7BD" />
-            <TextBlock x:Name="rightTextBlock" Text="" Style="{StaticResource GeneralText}" Margin="695,200,67,464" Foreground="#FFEDD7BD" />
+            <TextBlock x:Name="ownTextBlock" Text="不出" Style="{StaticResource GeneralText}" Margin="585,170,585,0" Visibility="Hidden"/>
+            <TextBlock x:Name="leftTextBlock" Text="不出" Style="{StaticResource GeneralText}" Margin="215,200,955,464" Foreground="#FFEDD7BD" Visibility="Hidden"/>
+            <TextBlock x:Name="rightTextBlock" Text="不出" Style="{StaticResource GeneralText}" Margin="695,200,67,464" Foreground="#FFEDD7BD" Visibility="Hidden"/>
 
             <StackPanel x:Name="lordCardPanel" Margin="0,0,0,550" Orientation="Horizontal" />
             <StackPanel x:Name="ownCardPanel" Margin="0,405,0,0" Orientation="Horizontal" />
