@@ -20,6 +20,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="assets\images\cards\55.png" />
+    <None Remove="assets\images\others\boy.png" />
     <None Remove="assets\sound\exciting.mp3" />
     <None Remove="assets\sound\normal.mp3" />
     <None Remove="assets\sound\welcome.mp3" />
@@ -83,11 +85,13 @@
     <Resource Include="assets\images\cards\52.png" />
     <Resource Include="assets\images\cards\53.png" />
     <Resource Include="assets\images\cards\54.png" />
+    <Resource Include="assets\images\cards\55.png" />
     <Resource Include="assets\images\cards\6.png" />
     <Resource Include="assets\images\cards\7.png" />
     <Resource Include="assets\images\cards\8.png" />
     <Resource Include="assets\images\cards\9.png" />
     <Resource Include="assets\images\others\background.jpg" />
+    <Resource Include="assets\images\others\boy.png" />
     <Resource Include="assets\images\others\landlord.png" />
     <Resource Include="assets\images\others\landlordlose.png" />
     <Resource Include="assets\images\others\landlordwin.png" />
