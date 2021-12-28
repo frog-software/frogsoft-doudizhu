@@ -6,6 +6,7 @@
     <RootNamespace>client</RootNamespace>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
+    <ApplicationIcon>bitbug_favicon.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -25,6 +26,10 @@
     <None Remove="assets\sound\exciting.mp3" />
     <None Remove="assets\sound\normal.mp3" />
     <None Remove="assets\sound\welcome.mp3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="bitbug_favicon.ico" />
   </ItemGroup>
 
   <ItemGroup>
