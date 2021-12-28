@@ -354,7 +354,7 @@ namespace frogsoft_doudizhu
                 Random random = new Random();
                 currentPlayer.Id = "user" + random.Next(1000).ToString();
                 currentGame.CurrentPlayer = currentPlayer.Id;
-                currentGame.RoomNo = "8";
+                currentGame.RoomNo = "2";
                 currentGame.MessageType = MessageType.JOIN;
 
                 ws.Send(JsonConvert.SerializeObject(currentGame));
@@ -683,7 +683,6 @@ namespace frogsoft_doudizhu
             rightPutCardList.Clear();
             selectCardList.Clear();
             ownPutCardList.Clear();
-            identityPanel.Children.Clear();
 
             gameGrid.Dispatcher.Invoke(() =>
             {
@@ -693,6 +692,7 @@ namespace frogsoft_doudizhu
                 gameGrid.Visibility = Visibility.Collapsed;
                 mainGrid.Visibility = Visibility.Visible;
 
+                identityPanel.Children.Clear();
                 LordCardPanel_Upgrade();
                 LeftPutCardPanel_Upgrade();
                 RightPutCardPanel_Upgrade();
