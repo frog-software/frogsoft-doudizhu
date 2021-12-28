@@ -59,6 +59,18 @@
             <Setter Property="Width" Value="110" />
             <Setter Property="Height" Value="55" />
         </Style>
+
+        <Style x:Key="CardNumberText" TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="FZKai-Z03" />
+            <Setter Property="FontSize" Value="35" />
+            <Setter Property="FontWeight" Value="DemiBold" />
+            <Setter Property="FontStyle" Value="Normal" />
+            <Setter Property="Background" Value="{x:Null}" />
+            <Setter Property="Foreground" Value="#441306" />
+            <Setter Property="Width" Value="110" />
+            <Setter Property="Height" Value="55" />
+            <Setter Property="TextAlignment" Value="Center" />
+        </Style>
     </Window.Resources>
 
     <Grid>
@@ -112,7 +124,10 @@
 
             <StackPanel x:Name="gameFinishPanel" Orientation="Vertical" Visibility="Collapsed" />
 
-            <Canvas x:Name="identityPanel" Visibility="Visible" />
+            <Canvas x:Name="identityPanel" Visibility="Visible">
+                <TextBlock x:Name="leftCardNumText" Text="99" Style="{StaticResource CardNumberText}" Margin="106,293,0,0" Panel.ZIndex="9"/>
+                <TextBlock x:Name="rightCardNumText" Text="" Style="{StaticResource CardNumberText}" Margin="1066,293,0,0" Panel.ZIndex="9"/>
+            </Canvas>
         </Grid>
     </Grid>
 

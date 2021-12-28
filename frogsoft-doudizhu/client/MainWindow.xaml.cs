@@ -86,13 +86,15 @@ namespace frogsoft_doudizhu
 
         private List<string> playerText = new List<string> { "", "不叫", "一分", "两分", "三分", "不出" };
 
-        private WebSocket ws = new WebSocket("ws://192.168.5.92:5174/api/games/com/frogsoft/doudizhu/room");
+        private WebSocket ws = new WebSocket("ws://localhost:5174/api/games/com/frogsoft/doudizhu/room");
 
         private PlayerModel currentPlayer = new PlayerModel();  // 存储固定的本地个人信息
         private GameModel currentGame = new GameModel();        // 存储本场游戏的信息
 
         private bool isAuto = false; // 是否开启托管
         private bool isAddFinishImage = false;
+        private bool isAddBoyImage = false;
+        private bool isAddCardNumBack = false;
 
         private void LordCardPanel_Upgrade() // 更新地主牌动画
         {
@@ -152,6 +154,8 @@ namespace frogsoft_doudizhu
         private void OwnCardPanel_Upgrade() // 更新剩余手牌堆动画
         {
             ownCardPanel.Children.Clear();
+            selectCardList.Clear();
+
             foreach (int card in ownCardList)
             {
                 Image image = new Image();
@@ -160,10 +164,7 @@ namespace frogsoft_doudizhu
                 image.Name = "card" + card.ToString();
                 image.Width = 105;
                 image.Height = 140;
-                if (selectCardList.Contains(card))
-                    image.Margin = new Thickness { Left = -70, Bottom = CARD_SELECT_MARGIN };
-                else
-                    image.Margin = new Thickness { Left = -70, Bottom = CARD_DESELECT_MARGIN };
+                image.Margin = new Thickness { Left = -70, Bottom = CARD_DESELECT_MARGIN };
 
                 image.MouseLeftButtonUp += CardImage_Click;
 
@@ -353,7 +354,7 @@ namespace frogsoft_doudizhu
                 Random random = new Random();
                 currentPlayer.Id = "user" + random.Next(1000).ToString();
                 currentGame.CurrentPlayer = currentPlayer.Id;
-                currentGame.RoomNo = "1";
+                currentGame.RoomNo = "8";
                 currentGame.MessageType = MessageType.JOIN;
 
                 ws.Send(JsonConvert.SerializeObject(currentGame));
@@ -487,6 +488,24 @@ namespace frogsoft_doudizhu
                             identityPanel.Children.Add(leftPlayerIdentityImage);
                             identityPanel.Children.Add(rightPlayerIdentityImage);
                             identityPanel.Children.Add(myIdentityImage);
+
+                            // 牌数量牌背
+                            if (!isAddCardNumBack)
+                            {
+                                isAddCardNumBack = true;
+                                var leftPlayerCardNumBack = new Image();
+                                leftPlayerCardNumBack.Source = new BitmapImage(new Uri("/assets/images/cards/55.png", UriKind.Relative));
+                                leftPlayerCardNumBack.Width = 45;
+                                leftPlayerCardNumBack.Margin = new Thickness(140, 280, 0, 0);
+
+                                var rightPlayerCardNumBack = new Image();
+                                rightPlayerCardNumBack.Source = new BitmapImage(new Uri("/assets/images/cards/55.png", UriKind.Relative));
+                                rightPlayerCardNumBack.Width = 45;
+                                rightPlayerCardNumBack.Margin = new Thickness(1100, 280, 0, 0);
+
+                                identityPanel.Children.Add(leftPlayerCardNumBack);
+                                identityPanel.Children.Add(rightPlayerCardNumBack);
+                            }
                         }
                         // 还没分出地主，不揭开地主牌
                         else
@@ -500,7 +519,34 @@ namespace frogsoft_doudizhu
                             rightCallTextBlock.Text = playerText[rightPlayer.CallScore + 1];
                         }
 
+                        // QQ秀
+                        if (!isAddBoyImage)
+                        {
+                            isAddBoyImage = true;
 
+                            var myselfImage = new Image();
+                            myselfImage.Source = new BitmapImage(new Uri("/assets/images/others/boy.png", UriKind.Relative));
+                            myselfImage.Width = 170;
+                            myselfImage.Margin = new Thickness(30, 400, 0, 0);
+
+                            var leftPlayerImage = new Image();
+                            leftPlayerImage.Source = new BitmapImage(new Uri("/assets/images/others/boy.png", UriKind.Relative));
+                            leftPlayerImage.Width = 170;
+                            leftPlayerImage.Margin = new Thickness(-10, 110, 0, 0);
+
+                            var rightPlayerImage = new Image();
+                            rightPlayerImage.Source = new BitmapImage(new Uri("/assets/images/others/boy.png", UriKind.Relative));
+                            rightPlayerImage.Width = 170;
+                            rightPlayerImage.Margin = new Thickness(1125, 110, 0, 0);
+
+                            identityPanel.Children.Add(myselfImage);
+                            identityPanel.Children.Add(leftPlayerImage);
+                            identityPanel.Children.Add(rightPlayerImage);
+                        }
+
+                        // 牌数量更新
+                        leftCardNumText.Text = leftPlayer.CardsInHand.Count.ToString();
+                        rightCardNumText.Text = rightPlayer.CardsInHand.Count.ToString();
 
                         // 分出胜负
                         if (myself.IsWin != WinStatus.UNDEF && !isAddFinishImage)
@@ -565,6 +611,7 @@ namespace frogsoft_doudizhu
                             mediaPlayer.Open(new Uri(Environment.CurrentDirectory + @"/assets/sound/yaobuqi.wav"));
                             mediaPlayer.Play();
                         }
+
                         LordCardPanel_Upgrade();
                         LeftPutCardPanel_Upgrade();
                         RightPutCardPanel_Upgrade();
